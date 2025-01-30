@@ -47,7 +47,7 @@ const Post = (props: Props) => {
   };
 
   return (
-    <>
+    <div className="Post.tsx">
       {props.status.segments.map((segment, index) =>
         segment.type === Type.alias ? (
           <Link
@@ -72,7 +72,7 @@ const Post = (props: Props) => {
           segment.text
         )
       )}
-    </>
+    </div>
   );
 };
 
