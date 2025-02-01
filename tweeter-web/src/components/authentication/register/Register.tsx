@@ -8,6 +8,7 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import { AuthToken, FakeData, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import useToastListener from "../../toaster/ToastListenerHook";
+import AuthenticationFields from "../AuthenticationFields";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -60,7 +61,7 @@ const Register = () => {
 
         const bytes: Uint8Array = Buffer.from(
           imageStringBase64BufferContents,
-          "base64"
+          "base64",
         );
 
         setImageBytes(bytes);
@@ -92,14 +93,14 @@ const Register = () => {
         alias,
         password,
         imageBytes,
-        imageFileExtension
+        imageFileExtension,
       );
 
       updateUserInfo(user, user, authToken, rememberMe);
       navigate("/");
     } catch (error) {
       displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
+        `Failed to register user because of exception: ${error}`,
       );
     } finally {
       setIsLoading(false);
@@ -112,7 +113,7 @@ const Register = () => {
     alias: string,
     password: string,
     userImageBytes: Uint8Array,
-    imageFileExtension: string
+    imageFileExtension: string,
   ): Promise<[User, AuthToken]> => {
     // Not neded now, but will be needed when you make the request to the server in milestone 3
     const imageStringBase64: string =
@@ -128,71 +129,6 @@ const Register = () => {
     return [user, FakeData.instance.authToken];
   };
 
-  const inputFieldGenerator = () => {
-    return (
-      <>
-        <div className="form-floating">
-          <input
-            type="text"
-            className="form-control"
-            size={50}
-            id="firstNameInput"
-            placeholder="First Name"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setFirstName(event.target.value)}
-          />
-          <label htmlFor="firstNameInput">First Name</label>
-        </div>
-        <div className="form-floating">
-          <input
-            type="text"
-            className="form-control"
-            size={50}
-            id="lastNameInput"
-            placeholder="Last Name"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setLastName(event.target.value)}
-          />
-          <label htmlFor="lastNameInput">Last Name</label>
-        </div>
-        <div className="form-floating">
-          <input
-            type="text"
-            className="form-control"
-            size={50}
-            id="aliasInput"
-            placeholder="name@example.com"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setAlias(event.target.value)}
-          />
-          <label htmlFor="aliasInput">Alias</label>
-        </div>
-        <div className="form-floating">
-          <input
-            type="password"
-            className="form-control"
-            id="passwordInput"
-            placeholder="Password"
-            onKeyDown={registerOnEnter}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          <label htmlFor="passwordInput">Password</label>
-        </div>
-        <div className="form-floating mb-3">
-          <input
-            type="file"
-            className="d-inline-block py-5 px-4 form-control bottom"
-            id="imageFileInput"
-            onKeyDown={registerOnEnter}
-            onChange={handleFileChange}
-          />
-          <label htmlFor="imageFileInput">User Image</label>
-          <img src={imageUrl} className="img-thumbnail" alt=""></img>
-        </div>
-      </>
-    );
-  };
-
   const switchAuthenticationMethodGenerator = () => {
     return (
       <div className="mb-3">
@@ -206,7 +142,13 @@ const Register = () => {
       headingText="Please Register"
       submitButtonLabel="Register"
       oAuthHeading="Register with:"
-      inputFieldGenerator={inputFieldGenerator}
+      inputFieldGenerator={() => (
+        <AuthenticationFields
+          onEnter={registerOnEnter}
+          setAlias={setAlias}
+          setPassword={setPassword}
+        />
+      )}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
       setRememberMe={setRememberMe}
       submitButtonDisabled={checkSubmitButtonStatus}
