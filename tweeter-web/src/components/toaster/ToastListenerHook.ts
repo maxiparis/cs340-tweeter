@@ -4,7 +4,7 @@ interface ToastListener {
   displayInfoMessage: (
     message: string,
     duration: number,
-    bootstrapClasses?: string
+    bootstrapClasses?: string,
   ) => void;
   displayErrorMessage: (message: string, bootstrapClasses?: string) => void;
   clearLastInfoMessage: () => void;
