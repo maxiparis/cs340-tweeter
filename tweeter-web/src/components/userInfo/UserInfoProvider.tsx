@@ -1,4 +1,4 @@
-import { Context, createContext, useState } from "react";
+import React, { Context, createContext, useState } from "react";
 import { User, AuthToken } from "tweeter-shared";
 
 const CURRENT_USER_KEY: string = "CurrentUserKey";
@@ -12,7 +12,7 @@ interface UserInfo {
     currentUser: User,
     displayedUser: User | null,
     authToken: AuthToken,
-    remember: boolean
+    remember: boolean,
   ) => void;
   clearUserInfo: () => void;
   setDisplayedUser: (user: User) => void;
@@ -26,7 +26,7 @@ const defaultUserInfo: UserInfo = {
     currentUser: User,
     displayedUser: User | null,
     authToken: AuthToken,
-    remember: boolean = false
+    remember: boolean = false,
   ) => null,
   clearUserInfo: () => null,
   setDisplayedUser: (user) => null,
@@ -42,7 +42,7 @@ interface Props {
 const UserInfoProvider: React.FC<Props> = ({ children }) => {
   const saveToLocalStorage = (
     currentUser: User,
-    authToken: AuthToken
+    authToken: AuthToken,
   ): void => {
     localStorage.setItem(CURRENT_USER_KEY, currentUser.toJson());
     localStorage.setItem(AUTH_TOKEN_KEY, authToken.toJson());
@@ -81,7 +81,7 @@ const UserInfoProvider: React.FC<Props> = ({ children }) => {
     currentUser: User,
     displayedUser: User | null,
     authToken: AuthToken,
-    remember: boolean
+    remember: boolean,
   ) => {
     setUserInfo({
       ...userInfo,
