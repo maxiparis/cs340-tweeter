@@ -11,10 +11,12 @@ const Post = (props: Props) => {
 
   return (
     <div className="Post.tsx">
-      {props.status.segments.map((segment, index) =>
-        segment.type === Type.alias ? (
+      {props.status.segments.map((segment, index) => {
+        const key = `${segment.type}-${segment.text}-${index}`;
+
+        return segment.type === Type.alias ? (
           <Link
-            key={index}
+            key={key}
             to={segment.text}
             onClick={(event) => navigateToUser(event)}
           >
@@ -22,7 +24,7 @@ const Post = (props: Props) => {
           </Link>
         ) : segment.type === Type.url ? (
           <a
-            key={index}
+            key={key}
             href={segment.text}
             target="_blank"
             rel="noopener noreferrer"
@@ -30,11 +32,11 @@ const Post = (props: Props) => {
             {segment.text}
           </a>
         ) : segment.type === Type.newline ? (
-          <br key={index} />
+          <br key={key} />
         ) : (
-          segment.text
-        ),
-      )}
+          <span key={key}>{segment.text}</span> // Wrap plain text with <span> for consistency
+        );
+      })}
     </div>
   );
 };
