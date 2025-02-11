@@ -51,7 +51,6 @@ const AuthenticatedRoutes = () => {
           path="feed"
           element={
             <StatusItemScroller
-              key={3}
               presenterGenerator={(view: StatusItemView) =>
                 new FeedPresenter(view)
               }
@@ -62,7 +61,6 @@ const AuthenticatedRoutes = () => {
           path="story"
           element={
             <StatusItemScroller
-              key={4}
               presenterGenerator={(view: StatusItemView) =>
                 new StoryPresenter(view)
               }
@@ -73,14 +71,9 @@ const AuthenticatedRoutes = () => {
           path="followees"
           element={
             <UserItemScroller
-              key={1}
               presenterGenerator={(view: UserItemView) =>
                 new FolloweePresenter(view)
               }
-              /** We are using a `presenterGenerator` so that we specify to the UserItemScroller the type of
-               *  the UserItemPresenter. UserItemScroller is expecting this function so that we define what kind of
-               *  Presenter to create.
-               */
             />
           }
         />
@@ -88,7 +81,6 @@ const AuthenticatedRoutes = () => {
           path="followers"
           element={
             <UserItemScroller
-              key={2}
               presenterGenerator={(view: UserItemView) =>
                 new FollowerPresenter(view)
               }
