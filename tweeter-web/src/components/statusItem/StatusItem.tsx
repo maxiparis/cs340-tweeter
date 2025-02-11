@@ -12,7 +12,10 @@ const StatusItem = ({ item, index }: Props) => {
   const { navigateToUser } = useNavigationHook();
 
   return (
-    <div key={index} className="row mb-3 mx-0 px-0 border rounded bg-white">
+    <div
+      key={index}
+      className="StatusItem row mb-3 mx-0 px-0 border rounded bg-white"
+    >
       <div className="col bg-light mx-0 px-0">
         <div className="container px-0">
           <div className="row mx-0 px-0">

@@ -6,6 +6,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import UserInfoProvider from "./components/userInfo/UserInfoProvider";
 import ToastProvider from "./components/toaster/ToastProvider";
+import { DevSupport } from "@react-buddy/ide-toolbox";
 
 library.add(fab);
 
@@ -19,5 +20,5 @@ root.render(
         <App />
       </ToastProvider>
     </UserInfoProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
