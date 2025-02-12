@@ -13,6 +13,7 @@ const AppNavbar = () => {
     useToastListener();
 
   const logOut = async () => {
+    //TODO: create MVP pattern for this
     displayInfoMessage("Logging Out...", 0);
 
     try {
