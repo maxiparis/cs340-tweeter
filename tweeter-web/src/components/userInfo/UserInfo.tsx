@@ -39,7 +39,7 @@ const UserInfo = () => {
   const [presenter] = useState(new UserInfoPresenter(listener));
 
   useEffect(() => {
-    presenter.setIsFollowerStatus(authToken!, currentUser!, displayedUser!); //TODO: should I await
+    presenter.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
     presenter.setNumbFollowees(authToken!, displayedUser!);
     presenter.setNumbFollowers(authToken!, displayedUser!);
   }, [displayedUser]);

@@ -7,7 +7,7 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null,
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
+    // TODO: [2a done] Replace with the result of calling server
     return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
   }
 
@@ -17,7 +17,7 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null,
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
+    // TODO: [2a done] Replace with the result of calling server
     return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
   }
 
@@ -26,12 +26,12 @@ export class FollowService {
     user: User,
     selectedUser: User,
   ) {
-    // TODO: Replace with the result of calling server
+    // TODO: [2a done] Replace with the result of calling server
     return FakeData.instance.isFollower();
   }
 
   public async getFolloweeCount(authToken: AuthToken, user: User) {
-    // TODO: Replace with the result of calling server
+    // TODO: [2a done] Replace with the result of calling server
     return FakeData.instance.getFolloweeCount(user.alias);
   }
 
@@ -42,7 +42,7 @@ export class FollowService {
     // Pause so we can see the follow message. Remove when connected to the server
     await new Promise((f) => setTimeout(f, 2000));
 
-    // TODO: Call the server
+    // TODO: [2a done] Call the server
 
     const followerCount = await this.getFollowerCount(authToken, userToFollow);
     const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
@@ -54,7 +54,7 @@ export class FollowService {
     authToken: AuthToken,
     user: User,
   ): Promise<number> {
-    // TODO: Replace with the result of calling server
+    // TODO: [2a done] Replace with the result of calling server
     return FakeData.instance.getFollowerCount(user.alias);
   }
 
@@ -65,7 +65,7 @@ export class FollowService {
     // Pause so we can see the unfollow message. Remove when connected to the server
     await new Promise((f) => setTimeout(f, 2000));
 
-    // TODO: Call the server
+    // TODO: [2a done] Call the server
 
     const followerCount = await this.getFollowerCount(
       authToken,
