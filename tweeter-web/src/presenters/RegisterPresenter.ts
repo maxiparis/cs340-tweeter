@@ -1,7 +1,7 @@
 import { UserService } from "../model/service/UserService";
 import RegisterView from "../listeners/RegisterView";
 import { Buffer } from "buffer";
-import { ChangeEvent } from "react";
+import React, { ChangeEvent } from "react";
 
 export default class RegisterPresenter {
   private view: RegisterView;
@@ -56,12 +56,10 @@ export default class RegisterPresenter {
         const imageStringBase64BufferContents =
           imageStringBase64.split("base64,")[1];
 
-        const bytes: Uint8Array = Buffer.from(
+        this.imageBytes = Buffer.from(
           imageStringBase64BufferContents,
           "base64",
         );
-
-        this.imageBytes = bytes;
       };
       reader.readAsDataURL(file);
 
