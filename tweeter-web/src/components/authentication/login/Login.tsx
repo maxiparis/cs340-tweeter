@@ -54,11 +54,14 @@ const Login = (props: Props) => {
       submitButtonLabel="Sign in"
       oAuthHeading="Sign in with:"
       inputFieldGenerator={() => (
-        <AuthenticationFields
-          onEnter={presenter.loginOnEnter}
-          setAlias={setAlias}
-          setPassword={setPassword}
-        />
+        <>
+          <AuthenticationFields
+            onEnter={presenter.loginOnEnter}
+            setAlias={setAlias}
+            setPassword={setPassword}
+          />
+          <img src="" className="img-thumbnail my-3" alt=""></img>
+        </>
       )}
       switchAuthenticationMethodGenerator={switchAuthenticationMethodGenerator}
       setRememberMe={setRememberMe}
