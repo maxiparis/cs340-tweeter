@@ -2,18 +2,20 @@ import { Link } from "react-router-dom";
 import Post from "./Post";
 import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import useNavigationHook from "../userNavigation/useNavigationHook";
+import { useId } from "react";
 
 interface Props {
   item: Status;
   index: number;
 }
 
-const StatusItem = ({ item, index }: Props) => {
+const StatusItem = ({ item }: Props) => {
   const { navigateToUser } = useNavigationHook();
+  const id = useId();
 
   return (
     <div
-      key={index}
+      key={id}
       className="StatusItem row mb-3 mx-0 px-0 border rounded bg-white"
     >
       <div className="col bg-light mx-0 px-0">

@@ -2,9 +2,11 @@ import "./AppNavbar.css";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useLocation } from "react-router-dom";
 import Image from "react-bootstrap/Image";
-import { AuthToken } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoListener from "../userInfo/UserInfoListenerHook";
+import LogoutListener from "../../listeners/LogoutListener";
+import { useState } from "react";
+import LogoutPresenter from "../../presenters/LogoutPresenter";
 
 const AppNavbar = () => {
   const location = useLocation();
@@ -12,25 +14,15 @@ const AppNavbar = () => {
   const { displayInfoMessage, displayErrorMessage, clearLastInfoMessage } =
     useToastListener();
 
-  const logOut = async () => {
-    displayInfoMessage("Logging Out...", 0);
-
-    try {
-      await logout(authToken!);
-
-      clearLastInfoMessage();
-      clearUserInfo();
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to log user out because of exception: ${error}`,
-      );
-    }
+  //MVP
+  const listener: LogoutListener = {
+    authToken,
+    clearUserInfo,
+    displayInfoMessage,
+    displayErrorMessage,
+    clearLastInfoMessage,
   };
-
-  const logout = async (authToken: AuthToken): Promise<void> => {
-    // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
-  };
+  const [presenter] = useState(new LogoutPresenter(listener));
 
   return (
     <Navbar
@@ -71,7 +63,11 @@ const AppNavbar = () => {
               <NavLink to="/followers">Followers</NavLink>
             </Nav.Item>
             <Nav.Item>
-              <NavLink id="logout" onClick={logOut} to={location.pathname}>
+              <NavLink
+                id="logout"
+                onClick={presenter.logOut}
+                to={location.pathname}
+              >
                 Logout
               </NavLink>
             </Nav.Item>
