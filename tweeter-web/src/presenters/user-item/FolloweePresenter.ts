@@ -1,11 +1,10 @@
-import { FollowService } from "../../model/service/FollowService";
 import { UserItemPresenter } from "./UserItemPresenter";
 import { AuthToken, User } from "tweeter-shared";
-import { UserItemView } from "../../listeners/UserItemView";
+import { AddItemsView } from "../../listeners/super/AddItemsView";
 export const PAGE_SIZE = 10;
 
 export class FolloweePresenter extends UserItemPresenter {
-  public constructor(view: UserItemView) {
+  public constructor(view: AddItemsView<User>) {
     super(view);
   }
 

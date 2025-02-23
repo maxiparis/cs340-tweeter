@@ -1,14 +1,8 @@
-import { AuthToken, User } from "tweeter-shared";
+import { User } from "tweeter-shared";
 import React from "react";
-import { View } from "./View";
+import { MessageView } from "./super/MessageView";
 
-export default interface UserInfoView extends View {
-  displayInfoMessage: (
-    message: string,
-    duration: number,
-    bootstrapClasses?: string | undefined,
-  ) => void;
-  clearLastInfoMessage: () => void;
+export default interface UserInfoView extends MessageView {
   setDisplayedUser: (user: User) => void;
   setIsFollower: React.Dispatch<React.SetStateAction<boolean>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;

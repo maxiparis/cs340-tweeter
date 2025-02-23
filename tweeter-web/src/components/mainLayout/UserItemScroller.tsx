@@ -5,10 +5,10 @@ import UserItem from "../userItem/UserItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoListener from "../userInfo/UserInfoListenerHook";
 import { UserItemPresenter } from "../../presenters/user-item/UserItemPresenter";
-import { UserItemView } from "../../listeners/UserItemView";
+import { AddItemsView } from "../../listeners/super/AddItemsView";
 
 interface Props {
-  presenterGenerator: (view: UserItemView) => UserItemPresenter;
+  presenterGenerator: (view: AddItemsView<User>) => UserItemPresenter;
 }
 
 const UserItemScroller = ({ presenterGenerator }: Props) => {
@@ -17,7 +17,7 @@ const UserItemScroller = ({ presenterGenerator }: Props) => {
   const [newItems, setNewItems] = useState<User[]>([]);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
   const { displayedUser, authToken } = useUserInfoListener();
-  const listener: UserItemView = {
+  const listener: AddItemsView<User> = {
     addItems: (newItems: User[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,
   };

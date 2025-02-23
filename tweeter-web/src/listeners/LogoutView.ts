@@ -1,13 +1,7 @@
 import { AuthToken } from "tweeter-shared";
-import { View } from "./View";
+import { MessageView } from "./super/MessageView";
 
-export default interface LogoutView extends View {
+export default interface LogoutView extends MessageView {
   authToken: AuthToken | null;
   clearUserInfo: () => void;
-  displayInfoMessage: (
-    message: string,
-    duration: number,
-    bootstrapClasses?: string | undefined,
-  ) => void;
-  clearLastInfoMessage: () => void;
 }

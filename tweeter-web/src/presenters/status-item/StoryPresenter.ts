@@ -1,10 +1,10 @@
 import { StatusItemPresenter } from "./StatusItemPresenter";
-import { StatusItemView } from "../../listeners/StatusItemView";
-import { AuthToken } from "tweeter-shared";
+import { AuthToken, Status } from "tweeter-shared";
 import { PAGE_SIZE } from "./FeedPresenter";
+import { AddItemsView } from "../../listeners/super/AddItemsView";
 
 export default class StoryPresenter extends StatusItemPresenter {
-  constructor(view: StatusItemView) {
+  constructor(view: AddItemsView<Status>) {
     super(view);
   }
 

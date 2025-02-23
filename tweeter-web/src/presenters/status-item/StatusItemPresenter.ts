@@ -1,15 +1,17 @@
-import { StatusItemView } from "../../listeners/StatusItemView";
 import StatusService from "../../model/service/StatusService";
 import { AuthToken, Status } from "tweeter-shared";
 import { Presenter } from "../Presenter";
+import { AddItemsView } from "../../listeners/super/AddItemsView";
 
-export abstract class StatusItemPresenter extends Presenter<StatusItemView> {
+export abstract class StatusItemPresenter extends Presenter<
+  AddItemsView<Status>
+> {
   private readonly _statusService: StatusService;
 
   private _lastItem: Status | null = null;
   protected _hasMoreItems = true;
 
-  protected constructor(view: StatusItemView) {
+  protected constructor(view: AddItemsView<Status>) {
     super(view);
     this._statusService = new StatusService();
   }

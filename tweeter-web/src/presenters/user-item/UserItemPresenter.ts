@@ -1,16 +1,16 @@
 import { AuthToken, User } from "tweeter-shared";
-import { UserItemView } from "../../listeners/UserItemView";
 import { FollowService } from "../../model/service/FollowService";
 import { Presenter } from "../Presenter";
+import { AddItemsView } from "../../listeners/super/AddItemsView";
 
-export abstract class UserItemPresenter extends Presenter<UserItemView> {
+export abstract class UserItemPresenter extends Presenter<AddItemsView<User>> {
   /// Properties
   private readonly _followService: FollowService;
   private _hasMoreItems = true;
   private _lastItem: User | null = null;
 
   // Constructor
-  protected constructor(view: UserItemView) {
+  protected constructor(view: AddItemsView<User>) {
     super(view);
     this._followService = new FollowService();
   }
