@@ -9,7 +9,7 @@ export default class StoryPresenter extends StatusItemPresenter {
   }
 
   async loadMoreItems(authToken: AuthToken, userAlias: string) {
-    try {
+    await this.doFailureReportingOperation(async () => {
       const [newItems, hasMore] = await this.statusService.loadMoreStoryItems(
         authToken!,
         userAlias,
@@ -20,10 +20,6 @@ export default class StoryPresenter extends StatusItemPresenter {
       this._hasMoreItems = hasMore;
       this.lastItem = newItems[newItems.length - 1];
       this.view.addItems(newItems);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to load story items because of exception: ${error}`,
-      );
-    }
+    }, "load story items");
   }
 }

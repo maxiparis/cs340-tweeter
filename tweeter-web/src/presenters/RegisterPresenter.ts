@@ -15,27 +15,27 @@ export default class RegisterPresenter extends Presenter<RegisterView> {
   }
 
   public doRegister = async () => {
-    try {
-      this.view.setIsLoading(true);
+    await this.doFailureReportingOperation(
+      async () => {
+        this.view.setIsLoading(true);
 
-      const [user, authToken] = await this.service.register(
-        this.view.firstName,
-        this.view.lastName,
-        this.view.alias,
-        this.view.password,
-        this.imageBytes,
-        this.view.imageFileExtension,
-      );
+        const [user, authToken] = await this.service.register(
+          this.view.firstName,
+          this.view.lastName,
+          this.view.alias,
+          this.view.password,
+          this.imageBytes,
+          this.view.imageFileExtension,
+        );
 
-      this.view.updateUserInfo(user, user, authToken, this.view.rememberMe);
-      this.view.navigate("/");
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`,
-      );
-    } finally {
-      this.view.setIsLoading(false);
-    }
+        this.view.updateUserInfo(user, user, authToken, this.view.rememberMe);
+        this.view.navigate("/");
+      },
+      "register user",
+      () => {
+        this.view.setIsLoading(false);
+      },
+    );
   };
 
   public registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {

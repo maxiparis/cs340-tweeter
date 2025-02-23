@@ -25,28 +25,28 @@ export default class PostStatusPresenter extends Presenter<PostStatusView> {
   public async submitPost(event: React.MouseEvent) {
     event.preventDefault();
 
-    try {
-      this._isLoading = true;
-      this.view.displayInfoMessage("Posting status...", 0);
+    await this.doFailureReportingOperation(
+      async () => {
+        this._isLoading = true;
+        this.view.displayInfoMessage("Posting status...", 0);
 
-      const status = new Status(
-        this.view.post,
-        this.view.currentUser!,
-        Date.now(),
-      );
+        const status = new Status(
+          this.view.post,
+          this.view.currentUser!,
+          Date.now(),
+        );
 
-      await this.service.postStatus(this.view.authToken!, status);
+        await this.service.postStatus(this.view.authToken!, status);
 
-      this.view.setPost("");
-      this.view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`,
-      );
-    } finally {
-      this.view.clearLastInfoMessage();
-      this._isLoading = false;
-    }
+        this.view.setPost("");
+        this.view.displayInfoMessage("Status posted!", 2000);
+      },
+      "post the status",
+      () => {
+        this.view.clearLastInfoMessage();
+        this._isLoading = false;
+      },
+    );
   }
 
   public clearPost = (event: React.MouseEvent) => {

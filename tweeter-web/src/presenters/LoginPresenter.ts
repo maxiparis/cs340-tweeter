@@ -14,28 +14,28 @@ export default class LoginPresenter extends Presenter<LoginView> {
 
   //Methods
   public doLogin = async () => {
-    try {
-      this.view.setIsLoading(true);
+    await this.doFailureReportingOperation(
+      async () => {
+        this.view.setIsLoading(true);
 
-      const [user, authToken] = await this.service.login(
-        this.view.alias,
-        this.view.password,
-      );
+        const [user, authToken] = await this.service.login(
+          this.view.alias,
+          this.view.password,
+        );
 
-      this.view.updateUserInfo(user, user, authToken, this.view.rememberMe);
+        this.view.updateUserInfo(user, user, authToken, this.view.rememberMe);
 
-      if (!!this.view.originalUrl) {
-        this.view.navigate(this.view.originalUrl);
-      } else {
-        this.view.navigate("/");
-      }
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to log user in because of exception: ${error}`,
-      );
-    } finally {
-      this.view.setIsLoading(false);
-    }
+        if (!!this.view.originalUrl) {
+          this.view.navigate(this.view.originalUrl);
+        } else {
+          this.view.navigate("/");
+        }
+      },
+      "log user in",
+      () => {
+        this.view.setIsLoading(false);
+      },
+    );
   };
 
   public loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
