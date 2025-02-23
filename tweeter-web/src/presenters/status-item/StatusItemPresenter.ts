@@ -1,22 +1,17 @@
 import { StatusItemView } from "../../listeners/StatusItemView";
 import StatusService from "../../model/service/StatusService";
 import { AuthToken, Status } from "tweeter-shared";
+import { Presenter } from "../Presenter";
 
-export abstract class StatusItemPresenter {
-  private readonly _view: StatusItemView;
+export abstract class StatusItemPresenter extends Presenter<StatusItemView> {
   private readonly _statusService: StatusService;
 
   private _lastItem: Status | null = null;
   protected _hasMoreItems = true;
 
   protected constructor(view: StatusItemView) {
-    this._view = view;
+    super(view);
     this._statusService = new StatusService();
-  }
-
-  //Getters/Setters
-  protected get view() {
-    return this._view;
   }
 
   protected get statusService(): StatusService {
@@ -44,7 +39,5 @@ export abstract class StatusItemPresenter {
   reset() {
     this._lastItem = null;
     this._hasMoreItems = true;
-    // setLastItem(null);
-    // setHasMoreItems(true);
   }
 }

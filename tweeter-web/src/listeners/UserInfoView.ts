@@ -1,11 +1,8 @@
 import { AuthToken, User } from "tweeter-shared";
 import React from "react";
+import { View } from "./View";
 
-export default interface UserInfoView {
-  displayErrorMessage: (
-    message: string,
-    bootstrapClasses?: string | undefined,
-  ) => void;
+export default interface UserInfoView extends View {
   displayInfoMessage: (
     message: string,
     duration: number,

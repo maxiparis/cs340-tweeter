@@ -2,15 +2,15 @@ import UserInfoView from "../listeners/UserInfoView";
 import { FollowService } from "../model/service/FollowService";
 import { AuthToken, User } from "tweeter-shared";
 import React from "react";
+import { Presenter } from "./Presenter";
 
-export default class UserInfoPresenter {
+export default class UserInfoPresenter extends Presenter<UserInfoView> {
   //Properties
-  private view: UserInfoView;
   private service: FollowService;
 
   //Constructor
   public constructor(view: UserInfoView) {
-    this.view = view;
+    super(view);
     this.service = new FollowService();
   }
 

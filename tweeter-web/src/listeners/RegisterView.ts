@@ -1,12 +1,9 @@
 import { AuthToken, User } from "tweeter-shared";
 import { NavigateFunction } from "react-router-dom";
 import React from "react";
+import { View } from "./View";
 
-export default interface RegisterView {
-  displayErrorMessage: (
-    message: string,
-    bootstrapClasses?: string | undefined,
-  ) => void;
+export default interface RegisterView extends View {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   updateUserInfo: (
     currentUser: User,

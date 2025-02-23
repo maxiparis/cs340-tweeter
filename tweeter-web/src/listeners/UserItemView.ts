@@ -1,6 +1,6 @@
 import { User } from "tweeter-shared";
+import { View } from "./View";
 
-export interface UserItemView {
+export interface UserItemView extends View {
   addItems(newItems: User[]): void;
-  displayErrorMessage: (message: string) => void;
 }

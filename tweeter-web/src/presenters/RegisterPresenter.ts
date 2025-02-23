@@ -2,14 +2,14 @@ import { UserService } from "../model/service/UserService";
 import RegisterView from "../listeners/RegisterView";
 import { Buffer } from "buffer";
 import React, { ChangeEvent } from "react";
+import { Presenter } from "./Presenter";
 
-export default class RegisterPresenter {
-  private view: RegisterView;
+export default class RegisterPresenter extends Presenter<RegisterView> {
   private service: UserService;
   private imageBytes: Uint8Array;
 
   public constructor(view: RegisterView) {
-    this.view = view;
+    super(view);
     this.service = new UserService();
     this.imageBytes = new Uint8Array();
   }

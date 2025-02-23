@@ -3,10 +3,10 @@ import StatusService from "../model/service/StatusService";
 import PostStatusView from "../listeners/PostStatusView";
 import React from "react";
 import { Simulate } from "react-dom/test-utils";
+import { Presenter } from "./Presenter";
 
-export default class PostStatusPresenter {
+export default class PostStatusPresenter extends Presenter<PostStatusView> {
   //Properties
-  private view: PostStatusView;
   private service: StatusService;
   private _isLoading = false;
 
@@ -17,7 +17,7 @@ export default class PostStatusPresenter {
 
   //Constructor
   public constructor(view: PostStatusView) {
-    this.view = view;
+    super(view);
     this.service = new StatusService();
   }
 

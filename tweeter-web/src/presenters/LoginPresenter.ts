@@ -1,14 +1,14 @@
 import LoginView from "../listeners/LoginView";
 import { UserService } from "../model/service/UserService";
+import { Presenter } from "./Presenter";
 
-export default class LoginPresenter {
+export default class LoginPresenter extends Presenter<LoginView> {
   //Properties
-  private view: LoginView;
   private service: UserService;
 
   //Constructor
   constructor(view: LoginView) {
-    this.view = view;
+    super(view);
     this.service = new UserService();
   }
 
