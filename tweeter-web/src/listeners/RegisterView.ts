@@ -1,7 +1,7 @@
 import React from "react";
-import { View } from "./super/View";
+import { AuthenticationView } from "./super/AuthenticationView";
 
-export default interface RegisterView extends View {
+export default interface RegisterView extends AuthenticationView {
   firstName: string;
   lastName: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
