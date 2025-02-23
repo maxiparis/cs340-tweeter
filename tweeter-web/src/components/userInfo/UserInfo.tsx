@@ -22,27 +22,25 @@ const UserInfo = () => {
     setDisplayedUser(currentUser!);
   }
 
+  useEffect(() => {
+    presenter.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
+    presenter.setNumbFollowees(authToken!, displayedUser!);
+    presenter.setNumbFollowers(authToken!, displayedUser!);
+  }, [displayedUser]);
+
   //MVP
   const listener: UserInfoView = {
     displayErrorMessage,
     displayInfoMessage,
     clearLastInfoMessage,
-    currentUser,
-    authToken,
-    displayedUser,
     setDisplayedUser,
     setIsFollower,
     setIsLoading,
     setFolloweeCount,
     setFollowerCount,
   };
-  const [presenter] = useState(new UserInfoPresenter(listener));
 
-  useEffect(() => {
-    presenter.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
-    presenter.setNumbFollowees(authToken!, displayedUser!);
-    presenter.setNumbFollowers(authToken!, displayedUser!);
-  }, [displayedUser]);
+  const [presenter] = useState(new UserInfoPresenter(listener));
 
   return (
     <div className={isLoading ? "UserInfo loading" : "UserInfo"}>
@@ -65,7 +63,9 @@ const UserInfo = () => {
                   Return to{" "}
                   <Link
                     to={""}
-                    onClick={(event) => presenter.switchToLoggedInUser(event)}
+                    onClick={(event) =>
+                      presenter.switchToLoggedInUser(event, currentUser)
+                    }
                   >
                     logged in user
                   </Link>
@@ -92,7 +92,11 @@ const UserInfo = () => {
                       type="submit"
                       style={{ width: "6em" }}
                       onClick={(event) =>
-                        presenter.unfollowDisplayedUser(event)
+                        presenter.unfollowDisplayedUser(
+                          event,
+                          displayedUser,
+                          authToken,
+                        )
                       }
                     >
                       {isLoading ? (
@@ -111,7 +115,13 @@ const UserInfo = () => {
                       className="btn btn-md btn-primary me-1"
                       type="submit"
                       style={{ width: "6em" }}
-                      onClick={(event) => presenter.followDisplayedUser(event)}
+                      onClick={(event) =>
+                        presenter.followDisplayedUser(
+                          event,
+                          displayedUser,
+                          authToken,
+                        )
+                      }
                     >
                       {isLoading ? (
                         <span

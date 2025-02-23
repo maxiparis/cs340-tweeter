@@ -12,9 +12,6 @@ export default interface UserInfoView {
     bootstrapClasses?: string | undefined,
   ) => void;
   clearLastInfoMessage: () => void;
-  currentUser: User | null;
-  authToken: AuthToken | null;
-  displayedUser: User | null;
   setDisplayedUser: (user: User) => void;
   setIsFollower: React.Dispatch<React.SetStateAction<boolean>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;

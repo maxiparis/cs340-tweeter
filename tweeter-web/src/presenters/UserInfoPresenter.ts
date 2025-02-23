@@ -47,19 +47,18 @@ export default class UserInfoPresenter {
 
   public followDisplayedUser = async (
     event: React.MouseEvent,
+    displayedUser: User,
+    authToken: AuthToken,
   ): Promise<void> => {
     event.preventDefault();
 
     try {
       this.view.setIsLoading(true);
-      this.view.displayInfoMessage(
-        `Following ${this.view.displayedUser!.name}...`,
-        0,
-      );
+      this.view.displayInfoMessage(`Following ${displayedUser!.name}...`, 0);
 
       const [followerCount, followeeCount] = await this.service.follow(
-        this.view.authToken!,
-        this.view.displayedUser!,
+        authToken,
+        displayedUser,
       );
 
       this.view.setIsFollower(true);
@@ -77,19 +76,18 @@ export default class UserInfoPresenter {
 
   public unfollowDisplayedUser = async (
     event: React.MouseEvent,
+    displayedUser: User,
+    authToken: AuthToken,
   ): Promise<void> => {
     event.preventDefault();
 
     try {
       this.view.setIsLoading(true);
-      this.view.displayInfoMessage(
-        `Unfollowing ${this.view.displayedUser!.name}...`,
-        0,
-      );
+      this.view.displayInfoMessage(`Unfollowing ${displayedUser!.name}...`, 0);
 
       const [followerCount, followeeCount] = await this.service.unfollow(
-        this.view.authToken!,
-        this.view.displayedUser!,
+        authToken,
+        displayedUser,
       );
 
       this.view.setIsFollower(false);
@@ -129,8 +127,11 @@ export default class UserInfoPresenter {
     }
   };
 
-  public switchToLoggedInUser = (event: React.MouseEvent): void => {
+  public switchToLoggedInUser = (
+    event: React.MouseEvent,
+    currentUser: User,
+  ): void => {
     event.preventDefault();
-    this.view.setDisplayedUser(this.view.currentUser!); //TODO: kind of weird?
+    this.view.setDisplayedUser(currentUser!);
   };
 }
