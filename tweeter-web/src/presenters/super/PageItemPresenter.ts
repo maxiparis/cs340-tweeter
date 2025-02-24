@@ -2,6 +2,8 @@ import { Presenter } from "./Presenter";
 import { AuthToken } from "tweeter-shared";
 import { AddItemsView } from "../../listeners/super/AddItemsView";
 
+export const PAGE_SIZE = 10;
+
 export abstract class PageItemPresenter<
   ItemType,
   ServiceType,
@@ -35,11 +37,25 @@ export abstract class PageItemPresenter<
     this._hasMoreItems = hasMoreItems;
   }
 
-  public abstract loadMoreItems(authToken: AuthToken, userAlias: string): void;
   public abstract createService(): ServiceType;
+  protected abstract getItemDescription(): string;
+  protected abstract getMoreItems(
+    authToken: AuthToken,
+    userAlias: string,
+  ): Promise<[ItemType[], boolean]>;
 
   reset() {
     this._lastItem = null;
     this._hasMoreItems = true;
+  }
+
+  public async loadMoreItems(authToken: AuthToken, userAlias: string) {
+    await this.doFailureReportingOperation(async () => {
+      const [newItems, hasMore] = await this.getMoreItems(authToken, userAlias);
+
+      this.hasMoreItems = hasMore;
+      this.lastItem = newItems[newItems.length - 1];
+      this.view.addItems(newItems);
+    }, this.getItemDescription());
   }
 }
