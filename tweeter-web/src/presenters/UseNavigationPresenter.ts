@@ -1,7 +1,7 @@
 import React from "react";
 import { UserService } from "../model/service/UserService";
 import UserNavigationView from "../listeners/UserNavigationView";
-import { Presenter } from "./Presenter";
+import { Presenter } from "./super/Presenter";
 
 export default class UseNavigationPresenter extends Presenter<UserNavigationView> {
   // Properties

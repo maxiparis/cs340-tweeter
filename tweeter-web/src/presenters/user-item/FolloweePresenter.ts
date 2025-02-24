@@ -1,7 +1,6 @@
-import { UserItemPresenter } from "./UserItemPresenter";
+import { PAGE_SIZE, UserItemPresenter } from "./UserItemPresenter";
 import { AuthToken, User } from "tweeter-shared";
 import { AddItemsView } from "../../listeners/super/AddItemsView";
-export const PAGE_SIZE = 10;
 
 export class FolloweePresenter extends UserItemPresenter {
   public constructor(view: AddItemsView<User>) {
@@ -10,7 +9,7 @@ export class FolloweePresenter extends UserItemPresenter {
 
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
     await this.doFailureReportingOperation(async () => {
-      const [newItems, hasMore] = await this.followService.loadMoreFollowees(
+      const [newItems, hasMore] = await this.service.loadMoreFollowees(
         authToken,
         userAlias,
         PAGE_SIZE,

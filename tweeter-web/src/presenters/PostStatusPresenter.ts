@@ -3,7 +3,7 @@ import StatusService from "../model/service/StatusService";
 import PostStatusView from "../listeners/PostStatusView";
 import React from "react";
 import { Simulate } from "react-dom/test-utils";
-import { Presenter } from "./Presenter";
+import { Presenter } from "./super/Presenter";
 
 export default class PostStatusPresenter extends Presenter<PostStatusView> {
   //Properties

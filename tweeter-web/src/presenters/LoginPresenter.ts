@@ -1,6 +1,6 @@
 import LoginView from "../listeners/LoginView";
 import { UserService } from "../model/service/UserService";
-import { Presenter } from "./Presenter";
+import { Presenter } from "./super/Presenter";
 
 export default class LoginPresenter extends Presenter<LoginView> {
   //Properties

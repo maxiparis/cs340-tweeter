@@ -2,7 +2,7 @@ import UserInfoView from "../listeners/UserInfoView";
 import { FollowService } from "../model/service/FollowService";
 import { AuthToken, User } from "tweeter-shared";
 import React from "react";
-import { Presenter } from "./Presenter";
+import { Presenter } from "./super/Presenter";
 
 export default class UserInfoPresenter extends Presenter<UserInfoView> {
   //Properties

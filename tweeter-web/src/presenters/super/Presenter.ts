@@ -1,4 +1,4 @@
-import { View } from "../listeners/super/View";
+import { View } from "../../listeners/super/View";
 
 export class Presenter<T extends View> {
   protected _view: T;

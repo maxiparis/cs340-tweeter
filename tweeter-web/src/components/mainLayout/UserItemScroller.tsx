@@ -15,8 +15,10 @@ const UserItemScroller = ({ presenterGenerator }: Props) => {
   const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<User[]>([]);
   const [newItems, setNewItems] = useState<User[]>([]);
+
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
   const { displayedUser, authToken } = useUserInfoListener();
+
   const listener: AddItemsView<User> = {
     addItems: (newItems: User[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,

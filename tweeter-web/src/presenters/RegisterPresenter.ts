@@ -2,7 +2,7 @@ import { UserService } from "../model/service/UserService";
 import RegisterView from "../listeners/RegisterView";
 import { Buffer } from "buffer";
 import React, { ChangeEvent } from "react";
-import { Presenter } from "./Presenter";
+import { Presenter } from "./super/Presenter";
 
 export default class RegisterPresenter extends Presenter<RegisterView> {
   private service: UserService;
