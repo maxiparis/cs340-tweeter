@@ -1,25 +1,21 @@
-import { UserService } from "../model/service/UserService";
 import RegisterView from "../listeners/RegisterView";
 import { Buffer } from "buffer";
 import React, { ChangeEvent } from "react";
-import { Presenter } from "./super/Presenter";
+import AuthPresenter from "./super/AuthPresenter";
 
-export default class RegisterPresenter extends Presenter<RegisterView> {
-  private service: UserService;
+export default class RegisterPresenter extends AuthPresenter<RegisterView> {
   private imageBytes: Uint8Array;
 
   public constructor(view: RegisterView) {
     super(view);
-    this.service = new UserService();
     this.imageBytes = new Uint8Array();
   }
 
   public doRegister = async () => {
-    await this.doFailureReportingOperation(
-      async () => {
-        this.view.setIsLoading(true);
-
-        const [user, authToken] = await this.service.register(
+    await this.doAuth(
+      // authOperation
+      () => {
+        return this.service.register(
           this.view.firstName,
           this.view.lastName,
           this.view.alias,
@@ -27,14 +23,11 @@ export default class RegisterPresenter extends Presenter<RegisterView> {
           this.imageBytes,
           this.view.imageFileExtension,
         );
-
-        this.view.updateUserInfo(user, user, authToken, this.view.rememberMe);
-        this.view.navigate("/");
       },
+      // navigatePostAuth
+      () => this.view.navigate("/"),
+      // message
       "register user",
-      () => {
-        this.view.setIsLoading(false);
-      },
     );
   };
 

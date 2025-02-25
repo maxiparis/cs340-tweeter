@@ -1,30 +1,17 @@
 import LoginView from "../listeners/LoginView";
-import { UserService } from "../model/service/UserService";
-import { Presenter } from "./super/Presenter";
+import AuthPresenter from "./super/AuthPresenter";
+import React from "react";
 
-export default class LoginPresenter extends Presenter<LoginView> {
-  //Properties
-  private service: UserService;
-
-  //Constructor
-  constructor(view: LoginView) {
-    super(view);
-    this.service = new UserService();
-  }
-
+export default class LoginPresenter extends AuthPresenter<LoginView> {
   //Methods
   public doLogin = async () => {
-    await this.doFailureReportingOperation(
-      async () => {
-        this.view.setIsLoading(true);
-
-        const [user, authToken] = await this.service.login(
-          this.view.alias,
-          this.view.password,
-        );
-
-        this.view.updateUserInfo(user, user, authToken, this.view.rememberMe);
-
+    await this.doAuth(
+      // authOperation
+      () => {
+        return this.service.login(this.view.alias, this.view.password);
+      },
+      // navigatePostAuth
+      () => {
         if (!!this.view.originalUrl) {
           this.view.navigate(this.view.originalUrl);
         } else {
@@ -32,9 +19,6 @@ export default class LoginPresenter extends Presenter<LoginView> {
         }
       },
       "log user in",
-      () => {
-        this.view.setIsLoading(false);
-      },
     );
   };
 
