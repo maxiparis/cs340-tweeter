@@ -12,7 +12,7 @@ export abstract class PageItemPresenter<
   private _hasMoreItems = true;
   private _service: ServiceType;
 
-  protected constructor(view: AddItemsView<ItemType>) {
+  public constructor(view: AddItemsView<ItemType>) {
     super(view);
     this._service = this.createService();
   }

@@ -18,6 +18,7 @@ export default class LoginPresenter extends AuthPresenter<LoginView> {
           this.view.navigate("/");
         }
       },
+      // message
       "log user in",
     );
   };

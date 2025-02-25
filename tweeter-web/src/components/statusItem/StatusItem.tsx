@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import Post from "./Post";
-import { AuthToken, FakeData, Status, User } from "tweeter-shared";
+import { Status } from "tweeter-shared";
 import useNavigationHook from "../userNavigation/useNavigationHook";
 import { useId } from "react";
 
 interface Props {
   item: Status;
-  index: number;
 }
 
 const StatusItem = ({ item }: Props) => {
