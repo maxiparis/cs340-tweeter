@@ -5,12 +5,16 @@ import { AuthToken } from "tweeter-shared";
 
 export default class AppNavbarPresenter extends Presenter<AppNavbarPresenterView> {
   // Properties
-  private service: UserService;
+  private _service: UserService;
 
   // Constructor
   constructor(view: AppNavbarPresenterView) {
     super(view);
-    this.service = new UserService();
+    this._service = new UserService();
+  }
+
+  public get service(): UserService {
+    return this._service;
   }
 
   // Methods
@@ -18,7 +22,7 @@ export default class AppNavbarPresenter extends Presenter<AppNavbarPresenterView
     this.view.displayInfoMessage("Logging Out...", 0);
 
     await this.doFailureReportingOperation(async () => {
-      await this.service.logout(authToken!);
+      await this._service.logout(authToken!);
 
       this.view.clearLastInfoMessage();
       this.view.clearUserInfo();
