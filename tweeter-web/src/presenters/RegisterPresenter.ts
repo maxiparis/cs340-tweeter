@@ -1,41 +1,34 @@
-import { UserService } from "../model/service/UserService";
 import RegisterView from "../listeners/RegisterView";
 import { Buffer } from "buffer";
 import React, { ChangeEvent } from "react";
+import AuthPresenter from "./super/AuthPresenter";
 
-export default class RegisterPresenter {
-  private view: RegisterView;
-  private service: UserService;
+export default class RegisterPresenter extends AuthPresenter<RegisterView> {
   private imageBytes: Uint8Array;
 
   public constructor(view: RegisterView) {
-    this.view = view;
-    this.service = new UserService();
+    super(view);
     this.imageBytes = new Uint8Array();
   }
 
   public doRegister = async () => {
-    try {
-      this.view.setIsLoading(true);
-
-      const [user, authToken] = await this.service.register(
-        this.view.firstName,
-        this.view.lastName,
-        this.view.alias,
-        this.view.password,
-        this.imageBytes,
-        this.view.imageFileExtension,
-      );
-
-      this.view.updateUserInfo(user, user, authToken, this.view.rememberMe);
-      this.view.navigate("/");
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`,
-      );
-    } finally {
-      this.view.setIsLoading(false);
-    }
+    await this.doAuth(
+      // authOperation
+      () => {
+        return this.service.register(
+          this.view.firstName,
+          this.view.lastName,
+          this.view.alias,
+          this.view.password,
+          this.imageBytes,
+          this.view.imageFileExtension,
+        );
+      },
+      // navigatePostAuth
+      () => this.view.navigate("/"),
+      // message
+      "register user",
+    );
   };
 
   public registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {

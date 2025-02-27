@@ -1,24 +1,27 @@
-import React, { startTransition } from "react";
-import { AuthToken, Status } from "tweeter-shared";
-import { useState, useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { AddItemsView } from "../../listeners/super/AddItemsView";
+import { PageItemPresenter } from "../../presenters/super/PageItemPresenter";
 import useToastListener from "../toaster/ToastListenerHook";
-import StatusItem from "../statusItem/StatusItem";
+import React, { startTransition, useEffect, useState } from "react";
 import useUserInfoListener from "../userInfo/UserInfoListenerHook";
-import { StatusItemView } from "../../listeners/StatusItemView";
-import { StatusItemPresenter } from "../../presenters/status-item/StatusItemPresenter";
+import InfiniteScroll from "react-infinite-scroll-component";
 
-interface Props {
-  presenterGenerator: (view: StatusItemView) => StatusItemPresenter;
+interface Props<ItemType, ServiceType> {
+  presenterGenerator: (
+    view: AddItemsView<ItemType>,
+  ) => PageItemPresenter<ItemType, ServiceType>;
+  itemComponentGenerator: (item: ItemType) => JSX.Element;
 }
 
-const StatusItemScroller = ({ presenterGenerator }: Props) => {
+function ItemScroller<ItemType, ServiceType>({
+  presenterGenerator,
+  itemComponentGenerator,
+}: Props<ItemType, ServiceType>) {
   const { displayErrorMessage } = useToastListener();
-  const [items, setItems] = useState<Status[]>([]);
-  const [newItems, setNewItems] = useState<Status[]>([]);
+  const [items, setItems] = useState<ItemType[]>([]);
+  const [newItems, setNewItems] = useState<ItemType[]>([]);
 
-  const listener: StatusItemView = {
-    addItems: (newItems: Status[]) => setNewItems(newItems),
+  const listener: AddItemsView<ItemType> = {
+    addItems: (newItems: ItemType[]) => setNewItems(newItems),
     displayErrorMessage: displayErrorMessage,
   };
   const [presenter] = useState(presenterGenerator(listener));
@@ -56,7 +59,7 @@ const StatusItemScroller = ({ presenterGenerator }: Props) => {
   };
 
   return (
-    <div className="StatusItemsScroller container px-0 overflow-visible vh-100">
+    <div className="ItemsScroller container px-0 overflow-visible vh-100">
       <InfiniteScroll
         className="pr-0 mr-0"
         dataLength={items.length}
@@ -64,12 +67,13 @@ const StatusItemScroller = ({ presenterGenerator }: Props) => {
         hasMore={presenter.hasMoreItems}
         loader={<h4>Loading...</h4>}
       >
-        {items.map((item, index) => (
-          <StatusItem item={item} index={index} />
-        ))}
+        {items.map(
+          (item, index) => itemComponentGenerator(item),
+          // <StatusItem item={item} index={index} />
+        )}
       </InfiniteScroll>
     </div>
   );
-};
+}
 
-export default StatusItemScroller;
+export default ItemScroller;

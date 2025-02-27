@@ -3,10 +3,10 @@ import StatusService from "../model/service/StatusService";
 import PostStatusView from "../listeners/PostStatusView";
 import React from "react";
 import { Simulate } from "react-dom/test-utils";
+import { Presenter } from "./super/Presenter";
 
-export default class PostStatusPresenter {
+export default class PostStatusPresenter extends Presenter<PostStatusView> {
   //Properties
-  private view: PostStatusView;
   private service: StatusService;
   private _isLoading = false;
 
@@ -17,7 +17,7 @@ export default class PostStatusPresenter {
 
   //Constructor
   public constructor(view: PostStatusView) {
-    this.view = view;
+    super(view);
     this.service = new StatusService();
   }
 
@@ -25,28 +25,28 @@ export default class PostStatusPresenter {
   public async submitPost(event: React.MouseEvent) {
     event.preventDefault();
 
-    try {
-      this._isLoading = true;
-      this.view.displayInfoMessage("Posting status...", 0);
+    await this.doFailureReportingOperation(
+      async () => {
+        this._isLoading = true;
+        this.view.displayInfoMessage("Posting status...", 0);
 
-      const status = new Status(
-        this.view.post,
-        this.view.currentUser!,
-        Date.now(),
-      );
+        const status = new Status(
+          this.view.post,
+          this.view.currentUser!,
+          Date.now(),
+        );
 
-      await this.service.postStatus(this.view.authToken!, status);
+        await this.service.postStatus(this.view.authToken!, status);
 
-      this.view.setPost("");
-      this.view.displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`,
-      );
-    } finally {
-      this.view.clearLastInfoMessage();
-      this._isLoading = false;
-    }
+        this.view.setPost("");
+        this.view.displayInfoMessage("Status posted!", 2000);
+      },
+      "post the status",
+      () => {
+        this.view.clearLastInfoMessage();
+        this._isLoading = false;
+      },
+    );
   }
 
   public clearPost = (event: React.MouseEvent) => {

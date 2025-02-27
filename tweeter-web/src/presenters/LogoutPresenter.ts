@@ -1,30 +1,26 @@
 import { UserService } from "../model/service/UserService";
-import LogoutListener from "../listeners/LogoutListener";
+import LogoutView from "../listeners/LogoutView";
+import { Presenter } from "./super/Presenter";
 
-export default class LogoutPresenter {
+export default class LogoutPresenter extends Presenter<LogoutView> {
   // Properties
-  private listener: LogoutListener;
   private service: UserService;
 
   // Constructor
-  constructor(listener: LogoutListener) {
-    this.listener = listener;
+  constructor(view: LogoutView) {
+    super(view);
     this.service = new UserService();
   }
 
   // Methods
   public logOut = async () => {
-    this.listener.displayInfoMessage("Logging Out...", 0);
+    this.view.displayInfoMessage("Logging Out...", 0);
 
-    try {
-      await this.service.logout(this.listener.authToken!);
+    await this.doFailureReportingOperation(async () => {
+      await this.service.logout(this.view.authToken!);
 
-      this.listener.clearLastInfoMessage();
-      this.listener.clearUserInfo();
-    } catch (error) {
-      this.listener.displayErrorMessage(
-        `Failed to log user out because of exception: ${error}`,
-      );
-    }
+      this.view.clearLastInfoMessage();
+      this.view.clearUserInfo();
+    }, "log user out");
   };
 }

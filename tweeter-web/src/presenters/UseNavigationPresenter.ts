@@ -1,15 +1,15 @@
 import React from "react";
 import { UserService } from "../model/service/UserService";
-import UseNavigationListener from "../listeners/UseNavigationListener";
+import UserNavigationView from "../listeners/UserNavigationView";
+import { Presenter } from "./super/Presenter";
 
-export default class UseNavigationPresenter {
+export default class UseNavigationPresenter extends Presenter<UserNavigationView> {
   // Properties
-  private listener: UseNavigationListener;
   private service: UserService;
 
   // Constructor
-  public constructor(listener: UseNavigationListener) {
-    this.listener = listener;
+  public constructor(view: UserNavigationView) {
+    super(view);
     this.service = new UserService();
   }
 
@@ -17,22 +17,18 @@ export default class UseNavigationPresenter {
   public navigateToUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
 
-    try {
+    await this.doFailureReportingOperation(async () => {
       const alias = this.extractAlias(event.target.toString());
-      const user = await this.service.getUser(this.listener.authToken!, alias);
+      const user = await this.service.getUser(this.view.authToken!, alias);
 
       if (!!user) {
-        if (this.listener.currentUser!.equals(user)) {
-          this.listener.setDisplayedUser(this.listener.currentUser!);
+        if (this.view.currentUser!.equals(user)) {
+          this.view.setDisplayedUser(this.view.currentUser!);
         } else {
-          this.listener.setDisplayedUser(user);
+          this.view.setDisplayedUser(user);
         }
       }
-    } catch (error) {
-      this.listener.displayErrorMessage(
-        `Failed to get user because of exception: ${error}`,
-      );
-    }
+    }, "get user");
   };
 
   private extractAlias = (value: string): string => {

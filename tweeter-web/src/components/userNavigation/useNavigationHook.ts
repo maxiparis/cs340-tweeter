@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoListener from "../userInfo/UserInfoListenerHook";
-import UseNavigationListener from "../../listeners/UseNavigationListener";
+import UserNavigationView from "../../listeners/UserNavigationView";
 import UseNavigationPresenter from "../../presenters/UseNavigationPresenter";
 
 interface NavigationHandler {
@@ -13,7 +13,7 @@ export default function useNavigationHook(): NavigationHandler {
   const { displayErrorMessage } = useToastListener();
 
   //MVP
-  const listener: UseNavigationListener = {
+  const listener: UserNavigationView = {
     setDisplayedUser,
     currentUser,
     authToken,

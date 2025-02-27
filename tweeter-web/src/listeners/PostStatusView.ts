@@ -1,17 +1,8 @@
 import { AuthToken, User } from "tweeter-shared";
 import React from "react";
+import { MessageView } from "./super/MessageView";
 
-export default interface PostStatusView {
-  displayErrorMessage: (
-    message: string,
-    bootstrapClasses?: string | undefined,
-  ) => void;
-  displayInfoMessage: (
-    message: string,
-    duration: number,
-    bootstrapClasses?: string | undefined,
-  ) => void;
-  clearLastInfoMessage: () => void;
+export default interface PostStatusView extends MessageView {
   currentUser: User | null;
   authToken: AuthToken | null;
   post: string;
