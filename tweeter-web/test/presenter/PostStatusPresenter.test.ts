@@ -66,4 +66,19 @@ describe("PostStatusPresenter", () => {
     ).once();
     verify(mockPostStatusView.clearLastInfoMessage()).once();
   });
+
+  it("when posting is not successful, should call displayError, clearLastInfoMessage, and should not clear post, or display posted message", async () => {
+    when(mockStatusService.postStatus(anything(), anything())).thenThrow(
+      Error("Something unexpected happened"),
+    );
+    await postStatusPresenter.submitPost();
+
+    verify(mockPostStatusView.displayErrorMessage(anything())).once();
+    verify(mockPostStatusView.clearLastInfoMessage()).once();
+
+    verify(mockPostStatusView.setPost(anything())).never();
+    verify(
+      mockPostStatusView.displayInfoMessage("Status posted!", 2000),
+    ).never();
+  });
 });
