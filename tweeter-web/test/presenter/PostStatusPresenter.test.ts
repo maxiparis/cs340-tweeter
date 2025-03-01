@@ -1,6 +1,7 @@
 import PostStatusPresenter from "../../src/presenters/PostStatusPresenter";
 import PostStatusView from "../../src/listeners/PostStatusView";
 import {
+  anyString,
   anything,
   capture,
   instance,
@@ -48,5 +49,21 @@ describe("PostStatusPresenter", () => {
 
     expect(token.token).toEqual(authToken.token);
     expect(status.post).toEqual(expectedPost);
+  });
+
+  it("when posting successful, should tell the view to clear the last info message, clear the post, and display a status posted message.", async () => {
+    const expectedPost = "my post";
+    when(mockStatusService.postStatus(anything(), anything())).thenResolve();
+    when(mockPostStatusView.post).thenReturn(expectedPost);
+    when(mockPostStatusView.authToken).thenReturn(authToken);
+
+    await postStatusPresenter.submitPost();
+
+    verify(mockStatusService.postStatus(anything(), anything())).once();
+    verify(mockPostStatusView.setPost("")).once();
+    verify(
+      mockPostStatusView.displayInfoMessage("Status posted!", 2000),
+    ).once();
+    verify(mockPostStatusView.clearLastInfoMessage()).once();
   });
 });
