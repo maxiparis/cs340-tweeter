@@ -4,16 +4,20 @@ import React from "react";
 
 export default class LoginPresenter extends AuthPresenter<LoginView> {
   //Methods
-  public doLogin = async () => {
+  public doLogin = async (
+    alias: string,
+    password: string,
+    originalUrl: string,
+  ) => {
     await this.doAuth(
       // authOperation
       () => {
-        return this.service.login(this.view.alias, this.view.password);
+        return this.service.login(alias, password);
       },
       // navigatePostAuth
       () => {
-        if (!!this.view.originalUrl) {
-          this.view.navigate(this.view.originalUrl);
+        if (!!originalUrl) {
+          this.view.navigate(originalUrl);
         } else {
           this.view.navigate("/");
         }
@@ -25,7 +29,7 @@ export default class LoginPresenter extends AuthPresenter<LoginView> {
 
   public loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key == "Enter" && !this.view.checkSubmitButtonStatus()) {
-      this.doLogin();
+      this.doLogin(this.view.alias, this.view.password, this.view.originalUrl!);
     }
   };
 }
