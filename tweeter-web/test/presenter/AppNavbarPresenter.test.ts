@@ -5,7 +5,6 @@ import {
   capture,
   instance,
   mock,
-  spy,
   verify,
   when,
 } from "@typestrong/ts-mockito";
@@ -22,19 +21,12 @@ describe("AppNavbarPresenter", () => {
 
   beforeEach(() => {
     mockAppNavbarPresenterView = mock<AppNavbarPresenterView>();
-    const mockAppNavbarPresenterViewInstance = instance(
-      mockAppNavbarPresenterView,
-    );
+    mockUserService = mock<UserService>(); // Correctly mock UserService
 
     appNavbarPresenter = new AppNavbarPresenter(
-      mockAppNavbarPresenterViewInstance,
+      instance(mockAppNavbarPresenterView),
+      instance(mockUserService),
     );
-
-    mockUserService = mock<UserService>(); // Correctly mock UserService
-    const mockUserServiceInstance = instance(mockUserService);
-
-    // Override private _service with the mock
-    (appNavbarPresenter as any)._service = mockUserServiceInstance;
   });
 
   /** ---------------------------------- **/

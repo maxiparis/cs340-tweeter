@@ -8,9 +8,12 @@ export default class AppNavbarPresenter extends Presenter<AppNavbarPresenterView
   private _service: UserService;
 
   // Constructor
-  constructor(view: AppNavbarPresenterView) {
+  constructor(
+    view: AppNavbarPresenterView,
+    service: UserService = new UserService(),
+  ) {
     super(view);
-    this._service = new UserService();
+    this._service = service;
   }
 
   public get service(): UserService {

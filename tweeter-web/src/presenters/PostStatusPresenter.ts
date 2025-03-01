@@ -2,13 +2,16 @@ import { Status } from "tweeter-shared";
 import StatusService from "../model/service/StatusService";
 import PostStatusView from "../listeners/PostStatusView";
 import React from "react";
-import { Simulate } from "react-dom/test-utils";
 import { Presenter } from "./super/Presenter";
 
 export default class PostStatusPresenter extends Presenter<PostStatusView> {
   //Properties
-  private service: StatusService;
+  private _service: StatusService;
   private _isLoading = false;
+
+  get service(): StatusService {
+    return this._service;
+  }
 
   //Getters/Setters
   get isLoading(): boolean {
@@ -16,14 +19,17 @@ export default class PostStatusPresenter extends Presenter<PostStatusView> {
   }
 
   //Constructor
-  public constructor(view: PostStatusView) {
+  public constructor(
+    view: PostStatusView,
+    service: StatusService = new StatusService(),
+  ) {
     super(view);
-    this.service = new StatusService();
+    this._service = service;
   }
 
   //Methods
-  public async submitPost(event: React.MouseEvent) {
-    event.preventDefault();
+  public async submitPost(event?: React.MouseEvent) {
+    event?.preventDefault();
 
     await this.doFailureReportingOperation(
       async () => {
@@ -36,7 +42,7 @@ export default class PostStatusPresenter extends Presenter<PostStatusView> {
           Date.now(),
         );
 
-        await this.service.postStatus(this.view.authToken!, status);
+        await this._service.postStatus(this.view.authToken!, status);
 
         this.view.setPost("");
         this.view.displayInfoMessage("Status posted!", 2000);
