@@ -54,7 +54,7 @@ describe("Login Component", () => {
 
     await user.click(signInButton);
 
-    // verify(presenter.doLogin());
+    verify(presenter.doLogin(alias, pass, originalUrl)).once();
   });
 });
 
