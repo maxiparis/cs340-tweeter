@@ -34,6 +34,7 @@ const PostStatus = () => {
           <textarea
             className="form-control"
             id="postStatusTextArea"
+            aria-label="textField"
             rows={10}
             placeholder="What's on your mind?"
             value={post}
@@ -47,6 +48,7 @@ const PostStatus = () => {
             id="postStatusButton"
             className="btn btn-md btn-primary me-1"
             type="button"
+            aria-label="postStatusButton"
             disabled={checkButtonStatus()}
             style={{ width: "8em" }}
             onClick={(event) => presenter.submitPost(event)}
@@ -65,6 +67,7 @@ const PostStatus = () => {
             id="clearStatusButton"
             className="btn btn-md btn-secondary"
             type="button"
+            aria-label="clearButton"
             disabled={checkButtonStatus()}
             onClick={(event) => presenter.clearPost(event)}
           >
