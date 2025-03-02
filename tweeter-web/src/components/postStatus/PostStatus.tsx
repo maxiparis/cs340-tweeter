@@ -5,7 +5,11 @@ import useUserInfoListener from "../userInfo/UserInfoListenerHook";
 import PostStatusView from "../../listeners/PostStatusView";
 import PostStatusPresenter from "../../presenters/PostStatusPresenter";
 
-const PostStatus = () => {
+interface Props {
+  presenter?: PostStatusPresenter;
+}
+
+const PostStatus = (props: Props) => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -21,7 +25,9 @@ const PostStatus = () => {
     post,
     setPost,
   };
-  const [presenter] = useState(new PostStatusPresenter(listener));
+  const [presenter] = useState(
+    props.presenter ?? new PostStatusPresenter(listener),
+  );
 
   const checkButtonStatus: () => boolean = () => {
     return !post.trim() || !authToken || !currentUser;
@@ -51,7 +57,9 @@ const PostStatus = () => {
             aria-label="postStatusButton"
             disabled={checkButtonStatus()}
             style={{ width: "8em" }}
-            onClick={(event) => presenter.submitPost(event)}
+            onClick={(event) =>
+              presenter.submitPost(post, currentUser, authToken, event)
+            }
           >
             {presenter.isLoading ? (
               <span

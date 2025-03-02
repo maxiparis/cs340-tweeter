@@ -1,4 +1,4 @@
-import { Status } from "tweeter-shared";
+import { AuthToken, Status, User } from "tweeter-shared";
 import StatusService from "../model/service/StatusService";
 import PostStatusView from "../listeners/PostStatusView";
 import React from "react";
@@ -28,7 +28,12 @@ export default class PostStatusPresenter extends Presenter<PostStatusView> {
   }
 
   //Methods
-  public async submitPost(event?: React.MouseEvent) {
+  public async submitPost(
+    post: string,
+    currentUser: User | null,
+    authToken: AuthToken | null,
+    event?: React.MouseEvent,
+  ) {
     event?.preventDefault();
 
     await this.doFailureReportingOperation(
@@ -36,13 +41,9 @@ export default class PostStatusPresenter extends Presenter<PostStatusView> {
         this._isLoading = true;
         this.view.displayInfoMessage("Posting status...", 0);
 
-        const status = new Status(
-          this.view.post,
-          this.view.currentUser!,
-          Date.now(),
-        );
+        const status = new Status(post, currentUser!, Date.now());
 
-        await this._service.postStatus(this.view.authToken!, status);
+        await this._service.postStatus(authToken!, status);
 
         this.view.setPost("");
         this.view.displayInfoMessage("Status posted!", 2000);

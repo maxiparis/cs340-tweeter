@@ -10,7 +10,7 @@ import {
   when,
 } from "@typestrong/ts-mockito";
 import StatusService from "../../src/model/service/StatusService";
-import { AuthToken } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 
 const FAKE_AUTHTOKEN = "qwerasdfzxcv";
 
@@ -19,10 +19,24 @@ describe("PostStatusPresenter", () => {
   let postStatusPresenter: PostStatusPresenter;
   let mockStatusService: StatusService;
   const authToken = new AuthToken(FAKE_AUTHTOKEN, Date.now());
+  let mockUser: User;
+  let mockAuthToken: AuthToken;
 
   beforeEach(() => {
     mockPostStatusView = mock<PostStatusView>();
     mockStatusService = mock<StatusService>();
+
+    mockUser = mock<User>();
+    mockAuthToken = mock<AuthToken>();
+
+    when(mockUser.firstName).thenReturn("first");
+    when(mockUser.lastName).thenReturn("last");
+    when(mockUser.alias).thenReturn("alias");
+    when(mockUser.imageUrl).thenReturn("imageURL");
+
+    when(mockAuthToken.token).thenReturn(FAKE_AUTHTOKEN);
+    when(mockAuthToken.timestamp).thenReturn(Date.now());
+
     postStatusPresenter = new PostStatusPresenter(
       instance(mockPostStatusView),
       instance(mockStatusService),
@@ -30,7 +44,11 @@ describe("PostStatusPresenter", () => {
   });
 
   it("should tell the view to display a posting status message.", () => {
-    postStatusPresenter.submitPost();
+    postStatusPresenter.submitPost(
+      anything(),
+      instance(mockUser),
+      instance(mockAuthToken),
+    );
     verify(
       mockPostStatusView.displayInfoMessage("Posting status...", 0),
     ).once();
@@ -42,7 +60,11 @@ describe("PostStatusPresenter", () => {
     when(mockPostStatusView.post).thenReturn(expectedPost);
     when(mockPostStatusView.authToken).thenReturn(authToken);
 
-    await postStatusPresenter.submitPost();
+    await postStatusPresenter.submitPost(
+      expectedPost,
+      instance(mockUser),
+      instance(mockAuthToken),
+    );
 
     verify(mockStatusService.postStatus(anything(), anything())).once();
     let [token, status] = capture(mockStatusService.postStatus).last();
@@ -57,7 +79,11 @@ describe("PostStatusPresenter", () => {
     when(mockPostStatusView.post).thenReturn(expectedPost);
     when(mockPostStatusView.authToken).thenReturn(authToken);
 
-    await postStatusPresenter.submitPost();
+    await postStatusPresenter.submitPost(
+      expectedPost,
+      instance(mockUser),
+      instance(mockAuthToken),
+    );
 
     verify(mockStatusService.postStatus(anything(), anything())).once();
     verify(mockPostStatusView.setPost("")).once();
@@ -71,7 +97,11 @@ describe("PostStatusPresenter", () => {
     when(mockStatusService.postStatus(anything(), anything())).thenThrow(
       Error("Something unexpected happened"),
     );
-    await postStatusPresenter.submitPost();
+    await postStatusPresenter.submitPost(
+      anyString(),
+      instance(mockUser),
+      instance(mockAuthToken),
+    );
 
     verify(mockPostStatusView.displayErrorMessage(anything())).once();
     verify(mockPostStatusView.clearLastInfoMessage()).once();
