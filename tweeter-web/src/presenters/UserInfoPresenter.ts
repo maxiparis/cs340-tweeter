@@ -1,5 +1,5 @@
 import UserInfoView from "../listeners/UserInfoView";
-import { FollowService } from "../model/service/FollowService";
+import { FollowService } from "../../../tweeter-server/src/model/service/FollowService";
 import { AuthToken, User } from "tweeter-shared";
 import React from "react";
 import { Presenter } from "./super/Presenter";

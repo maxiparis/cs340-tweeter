@@ -1,5 +1,5 @@
 import { User } from "tweeter-shared";
-import { FollowService } from "../../model/service/FollowService";
+import { FollowService } from "../../../../tweeter-server/src/model/service/FollowService";
 import { PageItemPresenter } from "../super/PageItemPresenter";
 export const PAGE_SIZE = 10;
 

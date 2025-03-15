@@ -5,7 +5,8 @@
   "scripts": {
     "build": "npm run compile",
     "compile": "npm run clean && tsc",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "clean-modules": "rm -rf node_modules"
   },
   "keywords": [],
   "author": "",
