@@ -1,10 +1,10 @@
 import { PagedUserItemRequest, PagedUserItemResponse } from "tweeter-shared";
-import { FollowService } from "../../model/service/FollowService";
+import { FollowServiceDB } from "../../model/service/FollowServiceDB";
 
 export const handler = async (
   request: PagedUserItemRequest,
 ): Promise<PagedUserItemResponse> => {
-  const followService = new FollowService();
+  const followService = new FollowServiceDB();
   const [items, hasMore] = await followService.loadMoreFollowees(
     request.token,
     request.userAlias,

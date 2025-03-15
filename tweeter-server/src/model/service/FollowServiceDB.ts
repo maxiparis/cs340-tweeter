@@ -1,6 +1,6 @@
 import { AuthToken, FakeData, User, UserDto } from "tweeter-shared";
 
-export class FollowService {
+export class FollowServiceDB {
   public async loadMoreFollowers(
     token: string,
     userAlias: string,
@@ -90,7 +90,7 @@ export class FollowService {
       userAlias,
     );
 
-    const dtos: UserDto[] = items.map((user) => user.dto); //TODO:
+    const dtos: UserDto[] = items.map((user) => user.dto);
     return [dtos, hasMore];
   }
 }
