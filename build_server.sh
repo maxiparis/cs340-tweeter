@@ -18,4 +18,7 @@ npm run clean-modules
 # Reinstall dependencies
 npm install
 
+# Create dist
+npm run build
+
 echo "Build and cleanup completed!"
