@@ -20,6 +20,31 @@ echo "✅ re-installed tweeter-server node_modules"
 
 # Create dist
 npm run build
-echo "✅ tweeter-server built"
+echo "✅ tweeter-server built. dist created"
 
-echo "⭐️Build and cleanup completed!"
+######################### CREATE: DIST FOLDER and ZIP #########################
+
+# Zip contents of dist folder
+cd dist || { echo "Directory 'dist' not found!"; exit 1; }
+zip -r ../dist.zip ./*
+echo "✅ zipped dist contents"
+
+
+######################### CREATE: NODEJS FOLDER and ZIP #########################
+
+# Create a nodejs folder, if it exists, clean its contents
+if [ -d "../nodejs" ]; then
+    rm -rf ../nodejs/*
+else
+    mkdir -p ../nodejs
+fi
+
+# Copy the node_modules folder into nodejs
+cp -r ../node_modules ../nodejs/
+
+# Zip nodejs (from the root)
+cd ..
+zip -r nodejs.zip nodejs
+echo "✅ updated and zipped nodejs contents"
+
+echo "⭐️Build, cleanup, and zipping completed! (dist and nodejs)"
