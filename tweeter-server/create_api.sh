@@ -75,10 +75,16 @@ echo "Method ${HTTP_METHOD} linked to Lambda function '${LAMBDA_FUNCTION_NAME}' 
 
 # Update permissions for the Lambda function
 aws lambda add-permission --function-name "$LAMBDA_FUNCTION_NAME" \
-  --statement-id "ApiGatewayInvokePermission" \
+  --statement-id "ApiGatewayInvokePermission-$(date +%s)" \
   --action "lambda:InvokeFunction" \
   --principal "apigateway.amazonaws.com" \
   --source-arn "arn:aws:execute-api:$(aws configure get region):$(aws sts get-caller-identity --query 'Account' --output text):$API_ID/*/$HTTP_METHOD/$PARENT_RESOURCE/$CHILD_RESOURCE"
+
+if [ $? -eq 0 ]; then
+  echo "Lambda permissions successfully added for API Gateway to invoke the function."
+else
+  echo "Error: Failed to add Lambda permissions for API Gateway."
+fi
 
 # Enable CORS for the Child Resource
 aws apigateway put-method --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "OPTIONS" --authorization-type "NONE"
