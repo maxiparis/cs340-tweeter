@@ -2,9 +2,9 @@
 
 # Variables
 API_NAME="tweeter"           # Name of the already created API
-LAMBDA_FUNCTION_NAME="tweeterGetFollowers"   # ✏️ Lambda Function Name
+LAMBDA_FUNCTION_NAME="tweeterCheckIsFollower"   # ✏️ Lambda Function Name
 PARENT_RESOURCE="follower"       # ✏️Parent resource
-CHILD_RESOURCE="list"             # ✏️Child resource
+CHILD_RESOURCE="check"             # ✏️Child resource
 HTTP_METHOD="POST"                 # HTTP Method to associate with the resource
 STAGE_NAME="dev"                 # Deployment stage name
 ALLOW_ORIGINS="*"                 # Allowed origins for CORS
@@ -68,8 +68,12 @@ aws apigateway put-integration --rest-api-id "$API_ID" --resource-id "$CHILD_RES
   --request-templates '{"application/json":"{\"statusCode\": 200}"}'
 aws apigateway put-method-response --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "OPTIONS" --status-code 200 \
   --response-parameters "method.response.header.Access-Control-Allow-Methods=true,method.response.header.Access-Control-Allow-Headers=true,method.response.header.Access-Control-Allow-Origin=true"
-aws apigateway put-integration-response --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "OPTIONS" --status-code 200 \
-  --response-parameters "method.response.header.Access-Control-Allow-Methods='${HTTP_METHOD},OPTIONS',method.response.header.Access-Control-Allow-Headers='Content-Type',method.response.header.Access-Control-Allow-Origin='${ALLOW_ORIGINS}'"
+  aws apigateway put-integration-response --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "OPTIONS" --status-code 200 \
+    --response-parameters \
+      "method.response.header.Access-Control-Allow-Methods=\"'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'\",\
+       method.response.header.Access-Control-Allow-Headers=\"'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'\",\
+       method.response.header.Access-Control-Allow-Origin=\"'*'\""
+
 echo "CORS enabled for '/$PARENT_RESOURCE/$CHILD_RESOURCE'"
 
 # Deploy the API to the Stage
