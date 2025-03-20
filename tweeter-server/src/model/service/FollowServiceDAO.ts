@@ -22,9 +22,9 @@ export class FollowServiceDAO {
   }
 
   public async getIsFollowerStatus(
-    authToken: AuthToken,
-    user: User,
-    selectedUser: User,
+    authToken: string,
+    user: string,
+    selectedUser: string,
   ) {
     // TODO: [2a done] Replace with the result of calling server
     return FakeData.instance.isFollower();
