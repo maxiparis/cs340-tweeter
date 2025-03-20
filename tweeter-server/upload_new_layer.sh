@@ -14,10 +14,11 @@ if [ ! -f "$ZIP_FILE" ]; then
 fi
 
 # Upload the zip file as a new version of the Lambda layer
-aws lambda publish-layer-version --layer-name tweeter-server --zip-file "fileb://$ZIP_FILE" --compatible-runtimes nodejs20.x
+UPLOAD_OUTPUT=$(aws lambda publish-layer-version --layer-name tweeter-server --zip-file "fileb://$ZIP_FILE" --compatible-runtimes nodejs20.x)
 
 if [ $? -eq 0 ]; then
     echo "✅ Lambda layer uploaded successfully!"
+    echo "New Lambda layer ARN: $(echo $UPLOAD_OUTPUT | jq -r .LayerVersionArn)"
 else
     echo "❌ Failed to upload Lambda layer!"
     exit 1
