@@ -32,7 +32,10 @@ export default class UserInfoPresenter extends Presenter<UserInfoView> {
   ) => {
     await this.doFailureReportingOperation(async () => {
       this.view.setFolloweeCount(
-        await this.service.getFolloweeCount(authToken, displayedUser),
+        await this.service.getFolloweeCount(
+          authToken.token,
+          displayedUser.alias,
+        ),
       );
     }, "get followees count");
   };

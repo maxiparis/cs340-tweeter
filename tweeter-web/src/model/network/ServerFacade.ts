@@ -1,8 +1,10 @@
 import {
   CheckIsFollowerRequest,
   CheckIsFollowerResponse,
+  GetFolloweeCountResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  TweeterRequest,
   User,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
@@ -29,7 +31,7 @@ export class ServerFacade {
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
-  public async getMoreFollowees(
+  public async loadMoreFollowees(
     request: PagedUserItemRequest,
   ): Promise<[User[], boolean]> {
     const response = await this.clientCommunicator.doPost<
@@ -56,7 +58,7 @@ export class ServerFacade {
     }
   }
 
-  public async getMoreFollowers(
+  public async loadMoreFollowers(
     request: PagedUserItemRequest,
   ): Promise<[User[], boolean]> {
     const response = await this.clientCommunicator.doPost<
@@ -83,7 +85,7 @@ export class ServerFacade {
     }
   }
 
-  public async getIsFollowerStatus(request: CheckIsFollowerRequest) {
+  public async loadIsFollowerStatus(request: CheckIsFollowerRequest) {
     const response = await this.clientCommunicator.doPost<
       CheckIsFollowerRequest,
       CheckIsFollowerResponse
@@ -93,7 +95,25 @@ export class ServerFacade {
       return response.isFollower;
     } else {
       console.error(response);
-      throw new Error(response.message ?? undefined);
+      throw new Error(
+        response.message ?? "An error happened in getIsFollowerStatus",
+      );
+    }
+  }
+
+  public async loadFolloweeCount(request: TweeterRequest) {
+    const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      GetFolloweeCountResponse
+    >(request, "/followee/count");
+
+    if (response.success) {
+      return response.followeeCount;
+    } else {
+      console.error(response);
+      throw new Error(
+        response.message ?? "An error happened in loadFolloweeCount",
+      );
     }
   }
 }

@@ -8,7 +8,7 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null,
   ): Promise<[User[], boolean]> {
-    return await ServerFacade.instance.getMoreFollowers({
+    return await ServerFacade.instance.loadMoreFollowers({
       token: authToken.token,
       userAlias: userAlias,
       pageSize: pageSize,
@@ -22,7 +22,7 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null,
   ): Promise<[User[], boolean]> {
-    return await ServerFacade.instance.getMoreFollowees({
+    return await ServerFacade.instance.loadMoreFollowees({
       token: authToken.token,
       userAlias: userAlias,
       pageSize: pageSize,
@@ -35,16 +35,20 @@ export class FollowService {
     userAlias: string,
     selectedUser: string,
   ) {
-    return ServerFacade.instance.getIsFollowerStatus({
+    return ServerFacade.instance.loadIsFollowerStatus({
       token: authToken.token,
       userAlias: userAlias,
       displayedUserAlias: selectedUser,
     });
   }
 
-  public async getFolloweeCount(authToken: AuthToken, user: User) {
+  public async getFolloweeCount(authToken: string, user: string) {
     // TODO: [2a done] Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    // return FakeData.instance.getFolloweeCount(user.alias);
+    return ServerFacade.instance.loadFolloweeCount({
+      token: authToken,
+      userAlias: user,
+    });
   }
 
   public async follow(
@@ -57,7 +61,10 @@ export class FollowService {
     // TODO: [2a done] Call the server
 
     const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
+    const followeeCount = await this.getFolloweeCount(
+      authToken.token,
+      userToFollow.alias,
+    );
 
     return [followerCount, followeeCount];
   }
@@ -84,8 +91,8 @@ export class FollowService {
       userToUnfollow,
     );
     const followeeCount = await this.getFolloweeCount(
-      authToken,
-      userToUnfollow,
+      authToken.token,
+      userToUnfollow.alias,
     );
 
     return [followerCount, followeeCount];
