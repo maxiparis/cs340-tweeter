@@ -19,6 +19,9 @@ npm install
 echo "✅ re-installed tweeter-server node_modules"
 
 # Create dist
+npm run clean
+echo "✅ Existing 'dist' folder removed"
+
 npm run build
 echo "✅ tweeter-server built. dist created"
 
