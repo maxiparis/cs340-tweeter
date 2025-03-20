@@ -7,7 +7,6 @@ export class FollowServiceDAO {
     pageSize: number,
     lastItem: UserDto | null,
   ): Promise<[UserDto[], boolean]> {
-    // TODO: [2a done] Replace with the result of calling server
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
@@ -17,7 +16,6 @@ export class FollowServiceDAO {
     pageSize: number,
     lastItem: UserDto | null,
   ): Promise<[UserDto[], boolean]> {
-    // TODO: [2a done] Replace with the result of calling server
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
@@ -26,13 +24,12 @@ export class FollowServiceDAO {
     user: string,
     selectedUser: string,
   ) {
-    // TODO: [2a done] Replace with the result of calling server
     return FakeData.instance.isFollower();
   }
 
-  public async getFolloweeCount(authToken: AuthToken, user: User) {
+  public async getFolloweeCount(authToken: string, user: string) {
     // TODO: [2a done] Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    return FakeData.instance.getFolloweeCount(user);
   }
 
   public async follow(
@@ -45,7 +42,10 @@ export class FollowServiceDAO {
     // TODO: [2a done] Call the server
 
     const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
+    const followeeCount = await this.getFolloweeCount(
+      authToken.token,
+      userToFollow.alias,
+    );
 
     return [followerCount, followeeCount];
   }
@@ -72,8 +72,8 @@ export class FollowServiceDAO {
       userToUnfollow,
     );
     const followeeCount = await this.getFolloweeCount(
-      authToken,
-      userToUnfollow,
+      authToken.token,
+      userToUnfollow.alias,
     );
 
     return [followerCount, followeeCount];

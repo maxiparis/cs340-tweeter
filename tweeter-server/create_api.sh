@@ -2,9 +2,9 @@
 
 # Variables
 API_NAME="tweeter"           # Name of the already created API
-LAMBDA_FUNCTION_NAME="tweeterCheckIsFollower"   # ✏️ Lambda Function Name
-PARENT_RESOURCE="follower"       # ✏️Parent resource
-CHILD_RESOURCE="check"             # ✏️Child resource
+LAMBDA_FUNCTION_NAME="tweeterGetFolloweeCount"   # ✏️ Lambda Function Name
+PARENT_RESOURCE="followee"       # ✏️Parent resource
+CHILD_RESOURCE="count"             # ✏️Child resource
 HTTP_METHOD="POST"                 # HTTP Method to associate with the resource
 STAGE_NAME="dev"                 # Deployment stage name
 ALLOW_ORIGINS="*"                 # Allowed origins for CORS
