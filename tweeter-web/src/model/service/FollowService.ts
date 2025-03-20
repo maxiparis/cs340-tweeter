@@ -32,11 +32,14 @@ export class FollowService {
 
   public async getIsFollowerStatus(
     authToken: AuthToken,
-    user: User,
-    selectedUser: User,
+    userAlias: string,
+    selectedUser: string,
   ) {
-    // TODO: [2a done] Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    return ServerFacade.instance.getIsFollowerStatus({
+      token: authToken.token,
+      userAlias: userAlias,
+      displayedUserAlias: selectedUser,
+    });
   }
 
   public async getFolloweeCount(authToken: AuthToken, user: User) {

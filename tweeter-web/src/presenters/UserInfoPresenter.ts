@@ -110,8 +110,8 @@ export default class UserInfoPresenter extends Presenter<UserInfoView> {
         this.view.setIsFollower(
           await this.service.getIsFollowerStatus(
             authToken!,
-            currentUser!,
-            displayedUser!,
+            currentUser!.alias,
+            displayedUser!.alias,
           ),
         );
       }
