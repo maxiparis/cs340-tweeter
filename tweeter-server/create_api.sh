@@ -36,23 +36,41 @@ fi
 # Check if the Child Resource (/followers/list) already exists
 CHILD_RESOURCE_ID=$(aws apigateway get-resources --rest-api-id "$API_ID" --query "items[?path=='/$PARENT_RESOURCE/$CHILD_RESOURCE'].id" --output text)
 
-if [ -z "$CHILD_RESOURCE_ID" ]; then
-  # Create the Child Resource if it does not exist
-  CHILD_RESOURCE_ID=$(aws apigateway create-resource --rest-api-id "$API_ID" --parent-id "$PARENT_RESOURCE_ID" --path-part "$CHILD_RESOURCE" --query 'id' --output text)
-  echo "Child resource '/$PARENT_RESOURCE/$CHILD_RESOURCE' created with ID: $CHILD_RESOURCE_ID"
-else
-  echo "Child resource '/$PARENT_RESOURCE/$CHILD_RESOURCE' already exists with ID: $CHILD_RESOURCE_ID"
+if [ -n "$CHILD_RESOURCE_ID" ]; then
+  # Delete the existing Child Resource
+  aws apigateway delete-resource --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID"
+  echo "Child resource '/$PARENT_RESOURCE/$CHILD_RESOURCE' deleted"
 fi
+
+# Create the Child Resource
+CHILD_RESOURCE_ID=$(aws apigateway create-resource --rest-api-id "$API_ID" --parent-id "$PARENT_RESOURCE_ID" --path-part "$CHILD_RESOURCE" --query 'id' --output text)
+echo "Child resource '/$PARENT_RESOURCE/$CHILD_RESOURCE' created with ID: $CHILD_RESOURCE_ID"
 
 # Add a Method to the Child Resource (POST Method) and setup permissions
 aws apigateway put-method --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "$HTTP_METHOD" --authorization-type "NONE"
 aws apigateway put-integration --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" \
   --http-method "$HTTP_METHOD" --type "AWS" --integration-http-method "POST" \
   --uri "arn:aws:apigateway:$(aws configure get region):lambda:path/2015-03-31/functions/arn:aws:lambda:$(aws configure get region):$(aws sts get-caller-identity --query 'Account' --output text):function:${LAMBDA_FUNCTION_NAME}/invocations"
+
 aws apigateway put-method-response --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "$HTTP_METHOD" --status-code 200 \
-  --response-models '{"application/json":"Empty"}'
+  --response-models '{"application/json":"Empty"}' \
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin":true}'
 aws apigateway put-integration-response --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "$HTTP_METHOD" --status-code 200 \
-  --response-templates '{"application/json":""}'
+  --response-templates '{"application/json":""}' \
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin":"'\''*'\''"}'
+
+aws apigateway put-method-response --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "$HTTP_METHOD" --status-code 400 \
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin":true}'
+aws apigateway put-integration-response --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "$HTTP_METHOD" --status-code 400 \
+  --selection-pattern "^\[Bad Request\].*" \
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin":"'\''*'\''"}'
+
+aws apigateway put-method-response --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "$HTTP_METHOD" --status-code 500 \
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin":true}'
+aws apigateway put-integration-response --rest-api-id "$API_ID" --resource-id "$CHILD_RESOURCE_ID" --http-method "$HTTP_METHOD" --status-code 500 \
+  --selection-pattern "^\[Server Error\].*" \
+  --response-parameters '{"method.response.header.Access-Control-Allow-Origin":"'\''*'\''"}'
+
 echo "Method ${HTTP_METHOD} linked to Lambda function '${LAMBDA_FUNCTION_NAME}' for resource '/$PARENT_RESOURCE/$CHILD_RESOURCE'"
 
 # Update permissions for the Lambda function
