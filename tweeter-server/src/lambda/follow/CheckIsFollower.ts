@@ -8,7 +8,7 @@ export const handler = async (
   request: CheckIsFollowerRequest,
 ): Promise<CheckIsFollowerResponse> => {
   const followService = new FollowServiceDAO();
-  const isFollower = await followService.getIsFollowerStatus(
+  const isFollower = await followService.fetchIsFollowerStatus(
     request.token,
     request.userAlias,
     request.displayedUserAlias,

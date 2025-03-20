@@ -1,7 +1,7 @@
 import { AuthToken, FakeData, User, UserDto } from "tweeter-shared";
 
 export class FollowServiceDAO {
-  public async loadMoreFollowers(
+  public async fetchMoreFollowers(
     token: string,
     userAlias: string,
     pageSize: number,
@@ -10,7 +10,7 @@ export class FollowServiceDAO {
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
-  public async loadMoreFollowees(
+  public async fetchMoreFollowees(
     token: string,
     userAlias: string,
     pageSize: number,
@@ -19,7 +19,7 @@ export class FollowServiceDAO {
     return this.getFakeData(lastItem, pageSize, userAlias);
   }
 
-  public async getIsFollowerStatus(
+  public async fetchIsFollowerStatus(
     authToken: string,
     user: string,
     selectedUser: string,
@@ -27,8 +27,7 @@ export class FollowServiceDAO {
     return FakeData.instance.isFollower();
   }
 
-  public async getFolloweeCount(authToken: string, user: string) {
-    // TODO: [2a done] Replace with the result of calling server
+  public async fetchFolloweeCount(authToken: string, user: string) {
     return FakeData.instance.getFolloweeCount(user);
   }
 
@@ -42,7 +41,7 @@ export class FollowServiceDAO {
     // TODO: [2a done] Call the server
 
     const followerCount = await this.getFollowerCount(authToken, userToFollow);
-    const followeeCount = await this.getFolloweeCount(
+    const followeeCount = await this.fetchFolloweeCount(
       authToken.token,
       userToFollow.alias,
     );
@@ -71,7 +70,7 @@ export class FollowServiceDAO {
       authToken,
       userToUnfollow,
     );
-    const followeeCount = await this.getFolloweeCount(
+    const followeeCount = await this.fetchFolloweeCount(
       authToken.token,
       userToUnfollow.alias,
     );

@@ -2,7 +2,7 @@ import { AuthToken, FakeData, User } from "tweeter-shared";
 import { ServerFacade } from "../network/ServerFacade";
 
 export class FollowService {
-  public async loadMoreFollowers(
+  public async getMoreFollowers(
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
@@ -16,7 +16,7 @@ export class FollowService {
     });
   }
 
-  public async loadMoreFollowees(
+  public async getMoreFollowees(
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
@@ -43,12 +43,18 @@ export class FollowService {
   }
 
   public async getFolloweeCount(authToken: string, user: string) {
-    // TODO: [2a done] Replace with the result of calling server
-    // return FakeData.instance.getFolloweeCount(user.alias);
     return ServerFacade.instance.loadFolloweeCount({
       token: authToken,
       userAlias: user,
     });
+  }
+
+  public async getFollowerCount(
+    authToken: AuthToken,
+    user: User,
+  ): Promise<number> {
+    // TODO: [2a done] Replace with the result of calling server
+    return FakeData.instance.getFollowerCount(user.alias);
   }
 
   public async follow(
@@ -67,14 +73,6 @@ export class FollowService {
     );
 
     return [followerCount, followeeCount];
-  }
-
-  public async getFollowerCount(
-    authToken: AuthToken,
-    user: User,
-  ): Promise<number> {
-    // TODO: [2a done] Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
   }
 
   public async unfollow(
