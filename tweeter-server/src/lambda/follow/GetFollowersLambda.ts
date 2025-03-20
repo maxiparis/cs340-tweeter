@@ -19,4 +19,3 @@ export const handler = async (
     hasMore: hasMore,
   };
 };
-f;

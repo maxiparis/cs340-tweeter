@@ -8,8 +8,12 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null,
   ): Promise<[User[], boolean]> {
-    // TODO: [2a done] Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    return await ServerFacade.instance.getMoreFollowers({
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem?.dto ?? null,
+    });
   }
 
   public async loadMoreFollowees(
@@ -18,8 +22,7 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null,
   ): Promise<[User[], boolean]> {
-    let facade = new ServerFacade();
-    return await facade.getMoreFollowees({
+    return await ServerFacade.instance.getMoreFollowees({
       token: authToken.token,
       userAlias: userAlias,
       pageSize: pageSize,
