@@ -21,4 +21,4 @@ export type { CheckIsFollowerRequest } from "./model/net/request/CheckIsFollower
 export type { TweeterResponse } from "./model/net/response/TweeterResponse";
 export type { PagedUserItemResponse } from "./model/net/response/PagedUserItemResponse";
 export type { CheckIsFollowerResponse } from "./model/net/response/CheckIsFollowerResponse";
-export type { GetFolloweeCountResponse } from "./model/net/response/GetFolloweeCountResponse";
+export type { GetFollowCountResponse } from "./model/net/response/GetFollowCountResponse";

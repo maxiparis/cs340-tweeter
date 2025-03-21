@@ -31,6 +31,10 @@ export class FollowServiceDAO {
     return FakeData.instance.getFolloweeCount(user);
   }
 
+  public async fetchFollowerCount(authToken: string, user: string) {
+    return FakeData.instance.getFollowerCount(user);
+  }
+
   public async follow(
     authToken: AuthToken,
     userToFollow: User,
@@ -40,21 +44,16 @@ export class FollowServiceDAO {
 
     // TODO: [2a done] Call the server
 
-    const followerCount = await this.getFollowerCount(authToken, userToFollow);
+    const followerCount = await this.fetchFollowerCount(
+      authToken.token,
+      userToFollow.alias,
+    );
     const followeeCount = await this.fetchFolloweeCount(
       authToken.token,
       userToFollow.alias,
     );
 
     return [followerCount, followeeCount];
-  }
-
-  public async getFollowerCount(
-    authToken: AuthToken,
-    user: User,
-  ): Promise<number> {
-    // TODO: [2a done] Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
   }
 
   public async unfollow(
@@ -66,9 +65,9 @@ export class FollowServiceDAO {
 
     // TODO: [2a done] Call the server
 
-    const followerCount = await this.getFollowerCount(
-      authToken,
-      userToUnfollow,
+    const followerCount = await this.fetchFollowerCount(
+      authToken.token,
+      userToUnfollow.alias,
     );
     const followeeCount = await this.fetchFolloweeCount(
       authToken.token,

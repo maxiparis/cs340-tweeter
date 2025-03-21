@@ -5,7 +5,7 @@ export const handler = async (
   request: TweeterRequest,
 ): Promise<GetFollowCountResponse> => {
   const followService = new FollowServiceDAO();
-  const followeeCount = await followService.fetchFolloweeCount(
+  const followerCount = await followService.fetchFollowerCount(
     request.token,
     request.userAlias,
   );
@@ -13,6 +13,6 @@ export const handler = async (
   return {
     success: true,
     message: null,
-    count: followeeCount,
+    count: followerCount,
   };
 };
