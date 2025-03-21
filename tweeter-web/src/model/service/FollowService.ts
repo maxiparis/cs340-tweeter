@@ -66,21 +66,11 @@ export class FollowService {
     authToken: AuthToken,
     userToFollow: User,
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+    // this will contact the backend, and the backend will return the followerCount, and followeeCount
 
-    // TODO: [2a done] Call the server
-
-    const followerCount = await this.getFollowerCount(
-      authToken.token,
-      userToFollow.alias,
-    );
-    const followeeCount = await this.getFolloweeCount(
-      authToken.token,
-      userToFollow.alias,
-    );
-
-    return [followerCount, followeeCount];
+    // return [followerCount, followeeCount];
+    return [0, 0];
+    // return ServerFacade.instance.
   }
 
   public async unfollow(

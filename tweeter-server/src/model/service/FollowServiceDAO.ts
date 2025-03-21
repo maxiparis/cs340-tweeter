@@ -35,43 +35,37 @@ export class FollowServiceDAO {
     return FakeData.instance.getFollowerCount(user);
   }
 
-  public async follow(
-    authToken: AuthToken,
-    userToFollow: User,
+  public async processFollow(
+    authToken: string,
+    userToFollow: string,
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-
-    // TODO: [2a done] Call the server
+    // Do logic in DB
 
     const followerCount = await this.fetchFollowerCount(
-      authToken.token,
-      userToFollow.alias,
+      authToken,
+      userToFollow,
     );
     const followeeCount = await this.fetchFolloweeCount(
-      authToken.token,
-      userToFollow.alias,
+      authToken,
+      userToFollow,
     );
 
     return [followerCount, followeeCount];
   }
 
-  public async unfollow(
-    authToken: AuthToken,
-    userToUnfollow: User,
+  public async processUnfollow(
+    authToken: string,
+    userToUnfollow: string,
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-
-    // TODO: [2a done] Call the server
+    // Do logic in DB
 
     const followerCount = await this.fetchFollowerCount(
-      authToken.token,
-      userToUnfollow.alias,
+      authToken,
+      userToUnfollow,
     );
     const followeeCount = await this.fetchFolloweeCount(
-      authToken.token,
-      userToUnfollow.alias,
+      authToken,
+      userToUnfollow,
     );
 
     return [followerCount, followeeCount];
