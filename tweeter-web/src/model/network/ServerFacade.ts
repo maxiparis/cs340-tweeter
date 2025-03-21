@@ -220,7 +220,7 @@ export class ServerFacade {
     // Handle errors
     if (response.success) {
       if (items == null) {
-        throw new Error(`No feed items found`);
+        throw new Error(`No story items found`);
       } else {
         return [items, response.hasMore];
       }

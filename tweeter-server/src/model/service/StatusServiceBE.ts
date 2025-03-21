@@ -19,13 +19,12 @@ export class StatusServiceBE {
     return this.getFakeStoryFeedItems(lastItem, pageSize);
   }
 
-  // public async postStatus(authToken: AuthToken, newStatus: Status) {
-  //   // Pause so we can see the logging out message. Remove when connected to the server
-  //   console.log("in postStatus");
-  //   await new Promise((f) => setTimeout(f, 2000));
-  //
-  //   // TODO: [2a done] Call the server to post the status
-  // }
+  public async postStatus(
+    authToken: string,
+    newStatus: StatusDto,
+  ): Promise<void> {
+    // Eventually we insert the status in the DB.
+  }
 
   // ------------------------------------------
   // ---------------- Utils ----------------
