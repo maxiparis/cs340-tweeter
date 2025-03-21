@@ -62,35 +62,25 @@ export class FollowService {
     });
   }
 
-  public async follow(
+  public async sendFollow(
     authToken: AuthToken,
     userToFollow: User,
   ): Promise<[followerCount: number, followeeCount: number]> {
     // this will contact the backend, and the backend will return the followerCount, and followeeCount
 
-    // return [followerCount, followeeCount];
-    return [0, 0];
-    // return ServerFacade.instance.
+    return ServerFacade.instance.loadFollowResponse({
+      token: authToken.token,
+      userAlias: userToFollow.alias,
+    });
   }
 
-  public async unfollow(
+  public async sendUnfollow(
     authToken: AuthToken,
     userToUnfollow: User,
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-
-    // TODO: [2a done] Call the server
-
-    const followerCount = await this.getFollowerCount(
-      authToken.token,
-      userToUnfollow.alias,
-    );
-    const followeeCount = await this.getFolloweeCount(
-      authToken.token,
-      userToUnfollow.alias,
-    );
-
-    return [followerCount, followeeCount];
+    return ServerFacade.instance.loadUnfollowResponse({
+      token: authToken.token,
+      userAlias: userToUnfollow.alias,
+    });
   }
 }

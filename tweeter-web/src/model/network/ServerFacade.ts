@@ -1,6 +1,7 @@
 import {
   CheckIsFollowerRequest,
   CheckIsFollowerResponse,
+  FollowerFolloweeCountResponse,
   GetFollowCountResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
@@ -129,6 +130,42 @@ export class ServerFacade {
       console.error(response);
       throw new Error(
         response.message ?? "An error happened in loadFollowerCount",
+      );
+    }
+  }
+
+  public async loadFollowResponse(
+    request: TweeterRequest,
+  ): Promise<[followerCount: number, followeeCount: number]> {
+    const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      FollowerFolloweeCountResponse
+    >(request, "/follower/follow");
+
+    if (response.success) {
+      return [response.followerCount, response.followeeCount];
+    } else {
+      console.error(response);
+      throw new Error(
+        response.message ?? "An error happened in loadFollowResponse",
+      );
+    }
+  }
+
+  public async loadUnfollowResponse(
+    request: TweeterRequest,
+  ): Promise<[followerCount: number, followeeCount: number]> {
+    const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      FollowerFolloweeCountResponse
+    >(request, "/follower/unfollow");
+
+    if (response.success) {
+      return [response.followerCount, response.followeeCount];
+    } else {
+      console.error(response);
+      throw new Error(
+        response.message ?? "An error happened in loadUnfollowResponse",
       );
     }
   }
