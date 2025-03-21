@@ -53,6 +53,7 @@ for lambda_info in $EDIT_LAMBDALIST; do
 
     # Concurrency limit
     if [ "$active_processes" -ge "$MAX_CONCURRENT" ]; then
+
         wait -n
         ((active_processes--))
     fi
