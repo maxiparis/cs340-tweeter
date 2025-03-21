@@ -5,6 +5,8 @@ import {
   GetFollowCountResponse,
   PagedItemRequest,
   PagedItemResponse,
+  Status,
+  StatusDto,
   TweeterRequest,
   User,
   UserDto,
@@ -171,6 +173,60 @@ export class ServerFacade {
       throw new Error(
         response.message ?? "An error happened in loadUnfollowResponse",
       );
+    }
+  }
+
+  public async loadMoreFeedItems(
+    request: PagedItemRequest<StatusDto>,
+  ): Promise<[Status[], boolean]> {
+    const response = await this.clientCommunicator.doPost<
+      PagedItemRequest<StatusDto>,
+      PagedItemResponse<StatusDto>
+    >(request, "/status/feedlist");
+
+    // Convert the StatusDTO array returned by ClientCommunicator to a Status array
+    const items: Status[] | null =
+      response.success && response.items
+        ? response.items.map((dto) => Status.fromDto(dto) as Status)
+        : null;
+
+    // Handle errors
+    if (response.success) {
+      if (items == null) {
+        throw new Error(`No feed items found`);
+      } else {
+        return [items, response.hasMore];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? "An error happened in loadFeedItems");
+    }
+  }
+
+  public async loadMoreStoryItems(
+    request: PagedItemRequest<StatusDto>,
+  ): Promise<[Status[], boolean]> {
+    const response = await this.clientCommunicator.doPost<
+      PagedItemRequest<StatusDto>,
+      PagedItemResponse<StatusDto>
+    >(request, "/status/storylist");
+
+    // Convert the StatusDTO array returned by ClientCommunicator to a Status array
+    const items: Status[] | null =
+      response.success && response.items
+        ? response.items.map((dto) => Status.fromDto(dto) as Status)
+        : null;
+
+    // Handle errors
+    if (response.success) {
+      if (items == null) {
+        throw new Error(`No feed items found`);
+      } else {
+        return [items, response.hasMore];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? "An error happened in loadFeedItems");
     }
   }
 }
