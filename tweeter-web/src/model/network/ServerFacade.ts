@@ -1,7 +1,7 @@
 import {
   CheckIsFollowerRequest,
   CheckIsFollowerResponse,
-  GetFolloweeCountResponse,
+  GetFollowCountResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   TweeterRequest,
@@ -104,15 +104,31 @@ export class ServerFacade {
   public async loadFolloweeCount(request: TweeterRequest) {
     const response = await this.clientCommunicator.doPost<
       TweeterRequest,
-      GetFolloweeCountResponse
+      GetFollowCountResponse
     >(request, "/followee/count");
 
     if (response.success) {
-      return response.followeeCount;
+      return response.count;
     } else {
       console.error(response);
       throw new Error(
         response.message ?? "An error happened in loadFolloweeCount",
+      );
+    }
+  }
+
+  public async loadFollowerCount(request: TweeterRequest) {
+    const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      GetFollowCountResponse
+    >(request, "/follower/count");
+
+    if (response.success) {
+      return response.count;
+    } else {
+      console.error(response);
+      throw new Error(
+        response.message ?? "An error happened in loadFollowerCount",
       );
     }
   }
