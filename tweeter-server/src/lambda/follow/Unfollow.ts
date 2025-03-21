@@ -1,13 +1,14 @@
-import { FollowServiceDAO } from "../../model/service/FollowServiceDAO";
+import { FollowServiceBE } from "../../model/service/FollowServiceBE";
 import { FollowerFolloweeCountResponse, TweeterRequest } from "tweeter-shared";
 
 export const handler = async (
   request: TweeterRequest,
 ): Promise<FollowerFolloweeCountResponse> => {
-  const followService = new FollowServiceDAO();
-  const [followerCount, followeeCount] = await followService.processUnfollow(
+  const followService = new FollowServiceBE();
+  const [followerCount, followeeCount] = await followService.updateFollowStatus(
     request.token,
     request.userAlias,
+    "unfollow",
   );
 
   return {

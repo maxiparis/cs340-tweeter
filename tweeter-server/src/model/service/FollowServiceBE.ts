@@ -1,22 +1,23 @@
-import { AuthToken, FakeData, User, UserDto } from "tweeter-shared";
+import { FakeData, User, UserDto } from "tweeter-shared";
 
-export class FollowServiceDAO {
+export type FollowOperation = "follow" | "unfollow";
+
+export class FollowServiceBE {
   public async fetchMoreFollowers(
     token: string,
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null,
   ): Promise<[UserDto[], boolean]> {
-    return this.getFakeData(lastItem, pageSize, userAlias);
+    return this.getFakePageOfUsers(lastItem, pageSize, userAlias);
   }
-
   public async fetchMoreFollowees(
     token: string,
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null,
   ): Promise<[UserDto[], boolean]> {
-    return this.getFakeData(lastItem, pageSize, userAlias);
+    return this.getFakePageOfUsers(lastItem, pageSize, userAlias);
   }
 
   public async fetchIsFollowerStatus(
@@ -35,30 +36,27 @@ export class FollowServiceDAO {
     return FakeData.instance.getFollowerCount(user);
   }
 
-  public async processFollow(
+  public async updateFollowStatus(
     authToken: string,
     userToFollow: string,
+    operation: FollowOperation,
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Do logic in DB
+    // Do logic in DB according to operation
+    // ......
 
-    const followerCount = await this.fetchFollowerCount(
-      authToken,
-      userToFollow,
-    );
-    const followeeCount = await this.fetchFolloweeCount(
-      authToken,
-      userToFollow,
-    );
+    const { followerCount, followeeCount } =
+      await this.fetchFollowerFolloweeCount(authToken, userToFollow);
 
     return [followerCount, followeeCount];
   }
 
-  public async processUnfollow(
+  // ---------------------------------------
+  // ---------------- UTILS ----------------
+
+  private async fetchFollowerFolloweeCount(
     authToken: string,
     userToUnfollow: string,
-  ): Promise<[followerCount: number, followeeCount: number]> {
-    // Do logic in DB
-
+  ) {
     const followerCount = await this.fetchFollowerCount(
       authToken,
       userToUnfollow,
@@ -67,11 +65,10 @@ export class FollowServiceDAO {
       authToken,
       userToUnfollow,
     );
-
-    return [followerCount, followeeCount];
+    return { followerCount, followeeCount };
   }
 
-  private async getFakeData(
+  private async getFakePageOfUsers(
     lastItem: UserDto | null,
     pageSize: number,
     userAlias: string,

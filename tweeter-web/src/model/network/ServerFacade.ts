@@ -32,6 +32,9 @@ export class ServerFacade {
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
+  // --------------------------------------------
+  // ------------ Reaching EndPoints ------------
+
   public async loadMoreFollowees(
     request: PagedUserItemRequest,
   ): Promise<[User[], boolean]> {
