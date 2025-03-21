@@ -3,10 +3,11 @@ import {
   CheckIsFollowerResponse,
   FollowerFolloweeCountResponse,
   GetFollowCountResponse,
-  PagedUserItemRequest,
-  PagedUserItemResponse,
+  PagedItemRequest,
+  PagedItemResponse,
   TweeterRequest,
   User,
+  UserDto,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -36,11 +37,11 @@ export class ServerFacade {
   // ------------ Reaching EndPoints ------------
 
   public async loadMoreFollowees(
-    request: PagedUserItemRequest,
+    request: PagedItemRequest<UserDto>,
   ): Promise<[User[], boolean]> {
     const response = await this.clientCommunicator.doPost<
-      PagedUserItemRequest,
-      PagedUserItemResponse
+      PagedItemRequest<UserDto>,
+      PagedItemResponse<UserDto>
     >(request, "/followee/list");
 
     // Convert the UserDto array returned by ClientCommunicator to a User array
@@ -63,11 +64,11 @@ export class ServerFacade {
   }
 
   public async loadMoreFollowers(
-    request: PagedUserItemRequest,
+    request: PagedItemRequest<UserDto>,
   ): Promise<[User[], boolean]> {
     const response = await this.clientCommunicator.doPost<
-      PagedUserItemRequest,
-      PagedUserItemResponse
+      PagedItemRequest<UserDto>,
+      PagedItemResponse<UserDto>
     >(request, "/follower/list");
 
     // Convert the UserDto array returned by ClientCommunicator to a User array
