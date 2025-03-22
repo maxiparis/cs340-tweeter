@@ -1,8 +1,8 @@
-import { AuthToken, Status, User } from "tweeter-shared";
 import StatusService from "../model/service/StatusService";
 import PostStatusView from "../listeners/PostStatusView";
 import React from "react";
 import { Presenter } from "./super/Presenter";
+import { AuthToken, Status, User } from "tweeter-shared";
 
 export default class PostStatusPresenter extends Presenter<PostStatusView> {
   //Properties
