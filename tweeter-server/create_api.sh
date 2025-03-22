@@ -2,9 +2,9 @@
 
 # Variables
 API_NAME="tweeter"           # Name of the already created API
-LAMBDA_FUNCTION_NAME="tweeterLogin"   # ✏️ Lambda Function Name
+LAMBDA_FUNCTION_NAME="tweeterRegister"   # ✏️ Lambda Function Name
 PARENT_RESOURCE="user"       # ✏️Parent resource
-CHILD_RESOURCE="login"             # ✏️Child resource
+CHILD_RESOURCE="register"             # ✏️Child resource
 HTTP_METHOD="POST"                 # HTTP Method to associate with the resource
 STAGE_NAME="dev"                 # Deployment stage name
 ALLOW_ORIGINS="*"                 # Allowed origins for CORS
