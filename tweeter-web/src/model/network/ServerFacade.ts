@@ -1,8 +1,11 @@
 import {
+  AuthToken,
   CheckIsFollowerRequest,
   CheckIsFollowerResponse,
   FollowerFolloweeCountResponse,
   GetFollowCountResponse,
+  LoginRequest,
+  LoginResponse,
   PagedItemRequest,
   PagedItemResponse,
   PostStatusRequest,
@@ -247,6 +250,22 @@ export class ServerFacade {
       throw new Error(
         response.message ?? "An error happened in loadPostStatus",
       );
+    }
+  }
+
+  public async loadLogin(request: LoginRequest): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      LoginRequest,
+      LoginResponse
+    >(request, "/user/login");
+
+    if (response.success) {
+      console.log("Logged in successfully");
+      //Forcing because I know user and token will exist if the response was successful.
+      return [User.fromDto(response.user)!, AuthToken.fromDto(response.token)!];
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? "An error happened in loadLogin");
     }
   }
 }

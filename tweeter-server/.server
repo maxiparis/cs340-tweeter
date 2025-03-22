@@ -10,4 +10,5 @@ tweeterUnfollow | lambda/follow/Unfollow.handler
 tweeterGetFeedItems | lambda/status/GetFeedItems.handler
 tweeterGetStoryItems | lambda/status/GetStoryItems.handler
 tweeterPostStatus | lambda/status/PostStatus.handler
+tweeterLogin | lambda/user/Login.handler
 '

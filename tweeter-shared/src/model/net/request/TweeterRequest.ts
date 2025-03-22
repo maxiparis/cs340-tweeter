@@ -1,4 +1,6 @@
-export interface TweeterRequest {
+export interface BaseRequest {}
+
+export interface TweeterRequest extends BaseRequest {
   readonly token: string;
 }
 
