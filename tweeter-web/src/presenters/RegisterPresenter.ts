@@ -11,17 +11,23 @@ export default class RegisterPresenter extends AuthPresenter<RegisterView> {
     this.imageBytes = new Uint8Array();
   }
 
-  public doRegister = async () => {
+  public doRegister = async (
+    firstName: string,
+    lastName: string,
+    alias: string,
+    password: string,
+    imageFileExtension: string,
+  ) => {
     await this.doAuth(
       // authOperation
       () => {
         return this.service.register(
-          this.view.firstName,
-          this.view.lastName,
-          this.view.alias,
-          this.view.password,
+          firstName,
+          lastName,
+          alias,
+          password,
           this.imageBytes,
-          this.view.imageFileExtension,
+          imageFileExtension,
         );
       },
       // navigatePostAuth

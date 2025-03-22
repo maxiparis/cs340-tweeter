@@ -119,7 +119,15 @@ const Register = () => {
       setRememberMe={setRememberMe}
       submitButtonDisabled={checkSubmitButtonStatus}
       isLoading={isLoading}
-      submit={presenter.doRegister}
+      submit={() => {
+        presenter.doRegister(
+          firstName,
+          lastName,
+          alias,
+          password,
+          imageFileExtension,
+        );
+      }}
     />
   );
 };

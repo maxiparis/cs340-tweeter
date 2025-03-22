@@ -2,6 +2,7 @@ import {
   AuthToken,
   AuthTokenDto,
   FakeData,
+  RegisterRequest,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -12,31 +13,14 @@ export class UserServiceBE {
     alias: string,
     password: string,
   ): Promise<[UserDto, AuthTokenDto]> => {
-    const user = FakeData.instance.firstUser;
-
-    return [user!.dto, FakeData.instance.authToken.dto];
+    return this.generateFakeUserToken();
   };
 
-  public register = async (
-    firstName: string,
-    lastName: string,
-    alias: string,
-    password: string,
-    userImageBytes: Uint8Array,
-    imageFileExtension: string,
-  ): Promise<[User, AuthToken]> => {
-    // Not needed now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
-
-    // TODO: [2a done] Replace with the result of calling the server
+  public processRegister = async (
+    request: RegisterRequest,
+  ): Promise<[UserDto, AuthTokenDto]> => {
     const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-
-    return [user, FakeData.instance.authToken];
+    return [user!.dto, FakeData.instance.authToken.dto];
   };
 
   public getUser = async (
@@ -52,4 +36,11 @@ export class UserServiceBE {
     // TODO: Delete when the call to the server is implemented.
     await new Promise((res) => setTimeout(res, 1000));
   };
+
+  // ------------------------------------------
+  // ---------------- Utils ----------------
+  private generateFakeUserToken(): [UserDto, AuthTokenDto] {
+    const user = FakeData.instance.firstUser;
+    return [user!.dto, FakeData.instance.authToken.dto];
+  }
 }

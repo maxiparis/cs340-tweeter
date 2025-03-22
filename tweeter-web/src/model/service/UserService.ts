@@ -7,12 +7,6 @@ export class UserService {
     alias: string,
     password: string,
   ): Promise<[User, AuthToken]> => {
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid alias or password");
-    }
-
     return await ServerFacade.instance.loadLogin({
       alias,
       password,
@@ -27,18 +21,17 @@ export class UserService {
     userImageBytes: Uint8Array,
     imageFileExtension: string,
   ): Promise<[User, AuthToken]> => {
-    // Not needed now, but will be needed when you make the request to the server in milestone 3
     const imageStringBase64: string =
       Buffer.from(userImageBytes).toString("base64");
 
-    // TODO: [2a done] Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-
-    return [user, FakeData.instance.authToken];
+    return await ServerFacade.instance.loadRegister({
+      firstName,
+      lastName,
+      alias,
+      password,
+      imageStringBase64,
+      imageFileExtension,
+    });
   };
 
   public getUser = async (

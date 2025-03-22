@@ -24,6 +24,7 @@ export type { PagedItemRequest } from "./model/net/request/PagedItemRequest";
 export type { CheckIsFollowerRequest } from "./model/net/request/CheckIsFollowerRequest";
 export type { PostStatusRequest } from "./model/net/request/PostStatusRequest";
 export type { LoginRequest } from "./model/net/request/LoginRequest";
+export type { RegisterRequest } from "./model/net/request/RegisterRequest";
 
 //Responses
 export type { TweeterResponse } from "./model/net/response/TweeterResponse";

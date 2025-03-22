@@ -9,6 +9,7 @@ import {
   PagedItemRequest,
   PagedItemResponse,
   PostStatusRequest,
+  RegisterRequest,
   Status,
   StatusDto,
   TweeterRequest,
@@ -266,6 +267,24 @@ export class ServerFacade {
     } else {
       console.error(response);
       throw new Error(response.message ?? "An error happened in loadLogin");
+    }
+  }
+
+  public async loadRegister(
+    request: RegisterRequest,
+  ): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost<
+      RegisterRequest,
+      LoginResponse
+    >(request, "/user/register");
+
+    if (response.success) {
+      console.log("Registered in successfully");
+      //Forcing because I know user and token will exist if the response was successful.
+      return [User.fromDto(response.user)!, AuthToken.fromDto(response.token)!];
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? "An error happened in loadRegister");
     }
   }
 }
