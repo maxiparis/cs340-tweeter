@@ -1,4 +1,4 @@
-import { TweeterRequest } from "./TweeterRequest";
+import { UserAliasRequest } from "./TweeterRequest";
 
 /**
  * {
@@ -9,7 +9,7 @@ import { TweeterRequest } from "./TweeterRequest";
  * }
  */
 
-export interface PagedItemRequest<ItemType> extends TweeterRequest {
+export interface PagedItemRequest<ItemType> extends UserAliasRequest {
   readonly pageSize: number;
   readonly lastItem: ItemType | null;
 }

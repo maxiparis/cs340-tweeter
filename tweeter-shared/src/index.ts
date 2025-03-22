@@ -14,7 +14,10 @@ export type { UserDto } from "./model/dto/UserDto";
 export type { StatusDto } from "./model/dto/StatusDto";
 
 // Requests
-export type { TweeterRequest } from "./model/net/request/TweeterRequest";
+export type {
+  TweeterRequest,
+  UserAliasRequest,
+} from "./model/net/request/TweeterRequest";
 export type { PagedItemRequest } from "./model/net/request/PagedItemRequest";
 export type { CheckIsFollowerRequest } from "./model/net/request/CheckIsFollowerRequest";
 export type { PostStatusRequest } from "./model/net/request/PostStatusRequest";

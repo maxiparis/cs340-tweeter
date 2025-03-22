@@ -1,6 +1,7 @@
 import { StatusDto } from "../../dto/StatusDto";
+import { TweeterRequest } from "./TweeterRequest";
 
-export interface PostStatusRequest {
-  readonly token: string;
+//This only inherits fromn TweeterRequest because I don't need a userAlias
+export interface PostStatusRequest extends TweeterRequest {
   readonly status: StatusDto;
 }

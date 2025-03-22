@@ -5,10 +5,13 @@ import {
   GetFollowCountResponse,
   PagedItemRequest,
   PagedItemResponse,
+  PostStatusRequest,
   Status,
   StatusDto,
   TweeterRequest,
+  TweeterResponse,
   User,
+  UserAliasRequest,
   UserDto,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
@@ -108,9 +111,9 @@ export class ServerFacade {
     }
   }
 
-  public async loadFolloweeCount(request: TweeterRequest) {
+  public async loadFolloweeCount(request: UserAliasRequest) {
     const response = await this.clientCommunicator.doPost<
-      TweeterRequest,
+      UserAliasRequest,
       GetFollowCountResponse
     >(request, "/followee/count");
 
@@ -124,9 +127,9 @@ export class ServerFacade {
     }
   }
 
-  public async loadFollowerCount(request: TweeterRequest) {
+  public async loadFollowerCount(request: UserAliasRequest) {
     const response = await this.clientCommunicator.doPost<
-      TweeterRequest,
+      UserAliasRequest,
       GetFollowCountResponse
     >(request, "/follower/count");
 
@@ -141,10 +144,10 @@ export class ServerFacade {
   }
 
   public async loadFollowResponse(
-    request: TweeterRequest,
+    request: UserAliasRequest,
   ): Promise<[followerCount: number, followeeCount: number]> {
     const response = await this.clientCommunicator.doPost<
-      TweeterRequest,
+      UserAliasRequest,
       FollowerFolloweeCountResponse
     >(request, "/follower/follow");
 
@@ -159,10 +162,10 @@ export class ServerFacade {
   }
 
   public async loadUnfollowResponse(
-    request: TweeterRequest,
+    request: UserAliasRequest,
   ): Promise<[followerCount: number, followeeCount: number]> {
     const response = await this.clientCommunicator.doPost<
-      TweeterRequest,
+      UserAliasRequest,
       FollowerFolloweeCountResponse
     >(request, "/follower/unfollow");
 
@@ -227,6 +230,23 @@ export class ServerFacade {
     } else {
       console.error(response);
       throw new Error(response.message ?? "An error happened in loadFeedItems");
+    }
+  }
+
+  public async loadPostStatus(request: PostStatusRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      TweeterResponse
+    >(request, "/status/post");
+
+    if (response.success) {
+      console.log("Status posted successfully");
+      return;
+    } else {
+      console.error(response);
+      throw new Error(
+        response.message ?? "An error happened in loadPostStatus",
+      );
     }
   }
 }
