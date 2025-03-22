@@ -1,6 +1,6 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
@@ -41,6 +41,12 @@ const Login = (props: Props) => {
   };
   const [presenter] = useState(props.presenter ?? new LoginPresenter(listener));
 
+  const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
+      presenter.doLogin(alias, password, props.originalUrl!);
+    }
+  };
+
   const switchAuthenticationMethodGenerator = () => {
     return (
       <div className="mb-3">
@@ -57,7 +63,7 @@ const Login = (props: Props) => {
       inputFieldGenerator={() => (
         <>
           <AuthenticationFields
-            onEnter={presenter.loginOnEnter}
+            onEnter={loginOnEnter}
             setAlias={setAlias}
             setPassword={setPassword}
           />

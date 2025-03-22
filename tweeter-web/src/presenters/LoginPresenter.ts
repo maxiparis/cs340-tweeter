@@ -26,10 +26,4 @@ export default class LoginPresenter extends AuthPresenter<LoginView> {
       "log user in",
     );
   };
-
-  public loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !this.view.checkSubmitButtonStatus()) {
-      this.doLogin(this.view.alias, this.view.password, this.view.originalUrl!);
-    }
-  };
 }

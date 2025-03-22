@@ -1,6 +1,6 @@
 import RegisterView from "../listeners/RegisterView";
 import { Buffer } from "buffer";
-import React, { ChangeEvent } from "react";
+import { ChangeEvent } from "react";
 import AuthPresenter from "./super/AuthPresenter";
 
 export default class RegisterPresenter extends AuthPresenter<RegisterView> {
@@ -35,12 +35,6 @@ export default class RegisterPresenter extends AuthPresenter<RegisterView> {
       // message
       "register user",
     );
-  };
-
-  public registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !this.view.checkSubmitButtonStatus()) {
-      this.doRegister();
-    }
   };
 
   public handleImageFile = (file: File | undefined) => {
