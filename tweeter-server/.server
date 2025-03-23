@@ -13,4 +13,5 @@ tweeterPostStatus | lambda/status/PostStatus.handler
 tweeterLogin | lambda/user/Login.handler
 tweeterRegister | lambda/user/Register.handler
 tweeterGetUser | lambda/user/GetUser.handler
+tweeterLogout | lambda/user/Logout.handler
 '

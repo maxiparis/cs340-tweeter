@@ -31,10 +31,10 @@ export class UserServiceBE {
     return FakeData.instance.findUserByAlias(alias)?.dto ?? null;
   };
 
-  public logout = async (authToken: AuthToken): Promise<void> => {
-    // Pause so we can see the logging out message.
-    // TODO: Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
+  public processLogout = async (token: string): Promise<void> => {
+    //Identify user with that token and perform DB operations.
+
+    return;
   };
 
   // ------------------------------------------
