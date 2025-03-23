@@ -35,11 +35,13 @@ export class UserService {
   };
 
   public getUser = async (
-    authToken: AuthToken,
-    alias: string,
+    token: string,
+    userAlias: string,
   ): Promise<User | null> => {
-    // TODO: [2a done] Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
+    return ServerFacade.instance.loadGetUser({
+      token,
+      userAlias,
+    });
   };
 
   public logout = async (authToken: AuthToken): Promise<void> => {

@@ -4,6 +4,7 @@ import {
   CheckIsFollowerResponse,
   FollowerFolloweeCountResponse,
   GetFollowCountResponse,
+  GetUserResponse,
   LoginRequest,
   LoginResponse,
   PagedItemRequest,
@@ -285,6 +286,20 @@ export class ServerFacade {
     } else {
       console.error(response);
       throw new Error(response.message ?? "An error happened in loadRegister");
+    }
+  }
+
+  public async loadGetUser(request: UserAliasRequest): Promise<User | null> {
+    const response = await this.clientCommunicator.doPost<
+      UserAliasRequest,
+      GetUserResponse
+    >(request, "/user/get");
+
+    if (response.success) {
+      return response.user ? User.fromDto(response.user)! : null;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? "An error happened in loadGetUser");
     }
   }
 }
