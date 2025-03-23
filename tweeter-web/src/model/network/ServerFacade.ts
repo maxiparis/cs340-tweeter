@@ -302,4 +302,19 @@ export class ServerFacade {
       throw new Error(response.message ?? "An error happened in loadGetUser");
     }
   }
+
+  public async loadLogout(request: TweeterRequest): Promise<void> {
+    const response = await this.clientCommunicator.doPost<
+      TweeterRequest,
+      TweeterResponse
+    >(request, "/user/logout");
+
+    if (response.success) {
+      console.log("Logout successful");
+      return;
+    } else {
+      console.error(response);
+      throw new Error(response.message ?? "An error happened in loadLogout");
+    }
+  }
 }
