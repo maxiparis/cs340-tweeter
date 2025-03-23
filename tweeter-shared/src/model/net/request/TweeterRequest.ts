@@ -5,5 +5,9 @@ export interface TweeterRequest extends BaseRequest {
 }
 
 export interface UserAliasRequest extends TweeterRequest {
+  /** from TweeterRequest:
+    - readonly token: string;
+  **/
+
   readonly userAlias: string;
 }

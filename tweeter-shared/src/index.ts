@@ -33,3 +33,4 @@ export type { CheckIsFollowerResponse } from "./model/net/response/CheckIsFollow
 export type { GetFollowCountResponse } from "./model/net/response/GetFollowCountResponse";
 export type { FollowerFolloweeCountResponse } from "./model/net/response/FollowerFolloweeCountResponse";
 export type { LoginResponse } from "./model/net/response/LoginResponse";
+export type { GetUserResponse } from "./model/net/response/GetUserResponse";

@@ -4,6 +4,7 @@ import {
   FakeData,
   RegisterRequest,
   User,
+  UserAliasRequest,
   UserDto,
 } from "tweeter-shared";
 import { Buffer } from "buffer";
@@ -23,12 +24,11 @@ export class UserServiceBE {
     return [user!.dto, FakeData.instance.authToken.dto];
   };
 
-  public getUser = async (
-    authToken: AuthToken,
+  public fetchUser = async (
+    token: string,
     alias: string,
-  ): Promise<User | null> => {
-    // TODO: [2a done] Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
+  ): Promise<UserDto | null> => {
+    return FakeData.instance.findUserByAlias(alias)?.dto ?? null;
   };
 
   public logout = async (authToken: AuthToken): Promise<void> => {
