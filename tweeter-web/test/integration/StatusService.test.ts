@@ -23,10 +23,14 @@ describe("StatusService", () => {
         lastItem,
       );
 
+      expect(page).toBeDefined();
+      expect(Array.isArray(page)).toBe(true);
+      expect(more).toBeDefined();
+
       if (more) {
-        expect(page.length).toBe(10);
+        expect(page.length).toBe(pageSize);
       } else {
-        expect(page.length).toBeLessThan(10);
+        expect(page.length).toBeLessThan(pageSize);
       }
 
       hasMore = more;
