@@ -10,6 +10,14 @@ import { UserAliasRequest } from "./TweeterRequest";
  */
 
 export interface PagedItemRequest<ItemType> extends UserAliasRequest {
+  /** from TweeterRequest:
+   - readonly token: string;
+   **/
+
+  /** from UserAliasRequest
+   -  readonly userAlias: string;
+   */
+
   readonly pageSize: number;
   readonly lastItem: ItemType | null;
 }
