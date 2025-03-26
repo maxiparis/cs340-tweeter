@@ -1,6 +1,6 @@
 import RegisterView from "../listeners/RegisterView";
 import { Buffer } from "buffer";
-import React, { ChangeEvent } from "react";
+import { ChangeEvent } from "react";
 import AuthPresenter from "./super/AuthPresenter";
 
 export default class RegisterPresenter extends AuthPresenter<RegisterView> {
@@ -11,17 +11,23 @@ export default class RegisterPresenter extends AuthPresenter<RegisterView> {
     this.imageBytes = new Uint8Array();
   }
 
-  public doRegister = async () => {
+  public doRegister = async (
+    firstName: string,
+    lastName: string,
+    alias: string,
+    password: string,
+    imageFileExtension: string,
+  ) => {
     await this.doAuth(
       // authOperation
       () => {
         return this.service.register(
-          this.view.firstName,
-          this.view.lastName,
-          this.view.alias,
-          this.view.password,
+          firstName,
+          lastName,
+          alias,
+          password,
           this.imageBytes,
-          this.view.imageFileExtension,
+          imageFileExtension,
         );
       },
       // navigatePostAuth
@@ -29,12 +35,6 @@ export default class RegisterPresenter extends AuthPresenter<RegisterView> {
       // message
       "register user",
     );
-  };
-
-  public registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !this.view.checkSubmitButtonStatus()) {
-      this.doRegister();
-    }
   };
 
   public handleImageFile = (file: File | undefined) => {

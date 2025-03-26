@@ -1,0 +1,17 @@
+BUCKET='cs340-lambdas-mp829'
+LAMBDA_ROLE='arn:aws:iam::438465157273:role/cs340-tweeter-server-script'
+EDIT_LAMBDALIST='tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
+tweeterGetFollowers | lambda/follow/GetFollowersLambda.handler
+tweeterCheckIsFollower | lambda/follow/CheckIsFollower.handler
+tweeterGetFolloweeCount | lambda/follow/GetFolloweeCount.handler
+tweeterGetFollowerCount | lambda/follow/GetFollowerCount.handler
+tweeterFollow | lambda/follow/Follow.handler
+tweeterUnfollow | lambda/follow/Unfollow.handler
+tweeterGetFeedItems | lambda/status/GetFeedItems.handler
+tweeterGetStoryItems | lambda/status/GetStoryItems.handler
+tweeterPostStatus | lambda/status/PostStatus.handler
+tweeterLogin | lambda/user/Login.handler
+tweeterRegister | lambda/user/Register.handler
+tweeterGetUser | lambda/user/GetUser.handler
+tweeterLogout | lambda/user/Logout.handler
+'

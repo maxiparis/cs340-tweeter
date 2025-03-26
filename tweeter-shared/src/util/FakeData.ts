@@ -73,7 +73,7 @@ export class FakeData {
     if (this.fakeUsers !== this.fakeUsers) {
       // Verify that this.fakeUsers always returns the same list of users (this could be violated by mock implementations of fakeUsers)
       throw new Error(
-        "fakeUsers should return the same list of fake users each time it's called"
+        "fakeUsers should return the same list of fake users each time it's called",
       );
     }
 
@@ -85,7 +85,7 @@ export class FakeData {
     if (this.fakeStatuses !== this.fakeStatuses) {
       // Verify that this.fakeStatuses always returns the same list of users (this could be violated by mock implementations of fakeStatuses)
       throw new Error(
-        "fakeStatuses should return the same list of fake statuses each time it's called"
+        "fakeStatuses should return the same list of fake statuses each time it's called",
       );
     }
   }
@@ -148,7 +148,7 @@ export class FakeData {
   }
 
   /**
-   * Returns a random boolean for whether or not a user follows another user.
+   * Returns a random boolean for whether a user follows another user.
    */
   public isFollower(): boolean {
     return Math.floor(Math.random() * 2) === 0;
@@ -165,7 +165,7 @@ export class FakeData {
   public getPageOfUsers(
     lastUser: User | null,
     limit: number,
-    omit: string | null
+    omit: string | null,
   ): [User[], boolean] {
     let userIndex = 0;
 
@@ -204,7 +204,7 @@ export class FakeData {
    */
   public getPageOfStatuses(
     lastStatus: Status | null,
-    limit: number
+    limit: number,
   ): [Status[], boolean] {
     let statusIndex = 0;
 
@@ -235,13 +235,13 @@ export class FakeData {
    * Returns a followers count for the user, as a random number between 1 and 10.
    */
   public getFollowerCount(userAlias: string): number | PromiseLike<number> {
-    return Math.floor(Math.random() * 10) + 1
+    return Math.floor(Math.random() * 10) + 1;
   }
 
   /**
    * Returns a followees count for the user, as a random number between 1 and 10.
    */
   public getFolloweeCount(userAlias: string): number | PromiseLike<number> {
-    return Math.floor(Math.random() * 10) + 1
+    return Math.floor(Math.random() * 10) + 1;
   }
 }

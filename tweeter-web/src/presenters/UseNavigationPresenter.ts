@@ -19,7 +19,10 @@ export default class UseNavigationPresenter extends Presenter<UserNavigationView
 
     await this.doFailureReportingOperation(async () => {
       const alias = this.extractAlias(event.target.toString());
-      const user = await this.service.getUser(this.view.authToken!, alias);
+      const user = await this.service.getUser(
+        this.view.authToken!.token,
+        alias,
+      );
 
       if (!!user) {
         if (this.view.currentUser!.equals(user)) {

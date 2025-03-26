@@ -1,8 +1,8 @@
 import UserInfoView from "../listeners/UserInfoView";
-import { FollowService } from "../model/service/FollowService";
 import { AuthToken, User } from "tweeter-shared";
 import React from "react";
 import { Presenter } from "./super/Presenter";
+import { FollowService } from "../model/service/FollowService";
 
 export default class UserInfoPresenter extends Presenter<UserInfoView> {
   //Properties
@@ -21,7 +21,10 @@ export default class UserInfoPresenter extends Presenter<UserInfoView> {
   ) => {
     await this.doFailureReportingOperation(async () => {
       this.view.setFollowerCount(
-        await this.service.getFollowerCount(authToken, displayedUser),
+        await this.service.getFollowerCount(
+          authToken.token,
+          displayedUser.alias,
+        ),
       );
     }, "followers count");
   };
@@ -32,7 +35,10 @@ export default class UserInfoPresenter extends Presenter<UserInfoView> {
   ) => {
     await this.doFailureReportingOperation(async () => {
       this.view.setFolloweeCount(
-        await this.service.getFolloweeCount(authToken, displayedUser),
+        await this.service.getFolloweeCount(
+          authToken.token,
+          displayedUser.alias,
+        ),
       );
     }, "get followees count");
   };
@@ -49,7 +55,7 @@ export default class UserInfoPresenter extends Presenter<UserInfoView> {
         this.view.setIsLoading(true);
         this.view.displayInfoMessage(`Following ${displayedUser!.name}...`, 0);
 
-        const [followerCount, followeeCount] = await this.service.follow(
+        const [followerCount, followeeCount] = await this.service.sendFollow(
           authToken,
           displayedUser,
         );
@@ -81,7 +87,7 @@ export default class UserInfoPresenter extends Presenter<UserInfoView> {
           0,
         );
 
-        const [followerCount, followeeCount] = await this.service.unfollow(
+        const [followerCount, followeeCount] = await this.service.sendUnfollow(
           authToken,
           displayedUser,
         );
@@ -110,8 +116,8 @@ export default class UserInfoPresenter extends Presenter<UserInfoView> {
         this.view.setIsFollower(
           await this.service.getIsFollowerStatus(
             authToken!,
-            currentUser!,
-            displayedUser!,
+            currentUser!.alias,
+            displayedUser!.alias,
           ),
         );
       }

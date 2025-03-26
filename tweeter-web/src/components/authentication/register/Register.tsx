@@ -52,6 +52,18 @@ const Register = () => {
   };
   const [presenter] = useState(new RegisterPresenter(listener));
 
+  const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
+      presenter.doRegister(
+        firstName,
+        lastName,
+        alias,
+        password,
+        imageFileExtension,
+      );
+    }
+  };
+
   const inputFieldGenerator = () => {
     return (
       <>
@@ -62,7 +74,7 @@ const Register = () => {
             size={50}
             id="firstNameInput"
             placeholder="First Name"
-            onKeyDown={presenter.registerOnEnter}
+            onKeyDown={registerOnEnter}
             onChange={(event) => setFirstName(event.target.value)}
           />
           <label htmlFor="firstNameInput">First Name</label>
@@ -74,14 +86,14 @@ const Register = () => {
             size={50}
             id="lastNameInput"
             placeholder="Last Name"
-            onKeyDown={presenter.registerOnEnter}
+            onKeyDown={registerOnEnter}
             onChange={(event) => setLastName(event.target.value)}
           />
           <label htmlFor="lastNameInput">Last Name</label>
         </div>
 
         <AuthenticationFields
-          onEnter={presenter.registerOnEnter}
+          onEnter={registerOnEnter}
           setAlias={setAlias}
           setPassword={setPassword}
         />
@@ -91,7 +103,7 @@ const Register = () => {
             type="file"
             className="d-inline-block py-5 px-4 form-control bottom"
             id="imageFileInput"
-            onKeyDown={presenter.registerOnEnter}
+            onKeyDown={registerOnEnter}
             onChange={presenter.handleFileChange}
           />
           <label htmlFor="imageFileInput">User Image</label>
@@ -119,7 +131,15 @@ const Register = () => {
       setRememberMe={setRememberMe}
       submitButtonDisabled={checkSubmitButtonStatus}
       isLoading={isLoading}
-      submit={presenter.doRegister}
+      submit={() => {
+        presenter.doRegister(
+          firstName,
+          lastName,
+          alias,
+          password,
+          imageFileExtension,
+        );
+      }}
     />
   );
 };

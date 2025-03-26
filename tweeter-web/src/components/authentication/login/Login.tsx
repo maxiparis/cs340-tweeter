@@ -1,6 +1,6 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
@@ -11,6 +11,7 @@ import LoginPresenter from "../../../presenters/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -38,7 +39,13 @@ const Login = (props: Props) => {
     rememberMe,
     originalUrl: props.originalUrl,
   };
-  const [presenter] = useState(new LoginPresenter(listener));
+  const [presenter] = useState(props.presenter ?? new LoginPresenter(listener));
+
+  const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
+      presenter.doLogin(alias, password, props.originalUrl!);
+    }
+  };
 
   const switchAuthenticationMethodGenerator = () => {
     return (
@@ -56,7 +63,7 @@ const Login = (props: Props) => {
       inputFieldGenerator={() => (
         <>
           <AuthenticationFields
-            onEnter={presenter.loginOnEnter}
+            onEnter={loginOnEnter}
             setAlias={setAlias}
             setPassword={setPassword}
           />
@@ -67,7 +74,9 @@ const Login = (props: Props) => {
       setRememberMe={setRememberMe}
       submitButtonDisabled={checkSubmitButtonStatus}
       isLoading={isLoading}
-      submit={presenter.doLogin}
+      submit={() => {
+        presenter.doLogin(alias, password, props.originalUrl!);
+      }}
     />
   );
 };
