@@ -3,23 +3,17 @@ import {
   AuthTokenDto,
   FakeData,
   RegisterRequest,
-  User,
-  UserAliasRequest,
   UserDto,
 } from "tweeter-shared";
-import { Buffer } from "buffer";
-import { IUserDAO, UserDAO } from "../DAO/UserDAO";
+import { IUserDAO } from "../DAO/UserDAO";
 import bcrypt from "bcryptjs";
 import { IAuthTokenDAO } from "../DAO/AuthTokenDAO";
-import {
-  IProfilePicturesDAO,
-  ProfilePicturesDAO,
-} from "../DAO/ProfilePicturesDAO"; //TODO: upload to server and test
+import { IProfilePicturesDAO } from "../DAO/ProfilePicturesDAO";
 
 export class UserServiceBE {
   private userDAO: IUserDAO;
   private authTokenDAO: IAuthTokenDAO;
-  private profilePicuresDAO: IProfilePicturesDAO;
+  private profilePicturesDAO: IProfilePicturesDAO;
 
   constructor(
     dao: IUserDAO,
@@ -28,7 +22,7 @@ export class UserServiceBE {
   ) {
     this.userDAO = dao;
     this.authTokenDAO = authTokenDAO;
-    this.profilePicuresDAO = profilePicturesDAO;
+    this.profilePicturesDAO = profilePicturesDAO;
   }
 
   public processLogin = async (
@@ -50,7 +44,7 @@ export class UserServiceBE {
       throw new Error("User already exists");
     }
 
-    let imageURL = await this.profilePicuresDAO.putImage(
+    let imageURL = await this.profilePicturesDAO.putImage(
       request.alias,
       request.imageStringBase64,
     );
