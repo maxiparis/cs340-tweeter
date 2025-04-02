@@ -10,6 +10,7 @@ import { UserDto } from "tweeter-shared";
 
 export interface IUserDAO {
   insertNewUser(user: UserDto, hashed: string): Promise<void>;
+  getUserByAlias(alias: string): Promise<any>; //TODO: maybe fix later on
 }
 
 export class UserDAO implements IUserDAO {
@@ -27,9 +28,30 @@ export class UserDAO implements IUserDAO {
 
   constructor() {}
 
+  async getUserByAlias(alias: string) {
+    const params = {
+      TableName: this.tableName,
+      KeyConditionExpression: `${this.aliasAttr}=:alias`,
+      ExpressionAttributeValues: {
+        ":alias": alias,
+      },
+    };
+
+    let response = await this.client.send(new QueryCommand(params));
+    return response.Items || [];
+  }
+
   async insertNewUser(user: UserDto, hashed: string): Promise<void> {
-    if (!user.alias) {
-      throw new Error("Alias is missing in UserDto.");
+    if (!user || !hashed) {
+      throw new Error(
+        "Invalid input. User and hashed password must be provided.",
+      );
+    }
+
+    if (!user.alias || !user.firstName || !user.lastName || !user.imageUrl) {
+      throw new Error(
+        "All user properties (alias, firstName, lastName, imageUrl) must be set.",
+      );
     }
 
     const params = {

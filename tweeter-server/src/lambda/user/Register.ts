@@ -5,11 +5,12 @@ import {
   TweeterResponse,
 } from "tweeter-shared";
 import { UserDAO } from "../../model/DAO/UserDAO";
+import { AuthTokenDAO } from "../../model/DAO/AuthTokenDAO";
 
 export const handler = async (
   request: RegisterRequest,
 ): Promise<LoginResponse | TweeterResponse> => {
-  const service = new UserServiceBE(new UserDAO()); //TODO: change for a factory
+  const service = new UserServiceBE(new UserDAO(), new AuthTokenDAO());
   try {
     const [user, token] = await service.processRegister(request);
     return {
@@ -20,6 +21,6 @@ export const handler = async (
     };
   } catch (error) {
     // @ts-ignore
-    throw new Error("[BadRequest]" + error.message);
+    throw new Error("[BadRequest] " + error.message);
   }
 };

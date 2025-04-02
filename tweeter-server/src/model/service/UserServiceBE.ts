@@ -9,13 +9,15 @@ import {
 } from "tweeter-shared";
 import { Buffer } from "buffer";
 import { IUserDAO, UserDAO } from "../DAO/UserDAO";
-import bcrypt from "bcryptjs"; //TODO: upload to server and test
+import bcrypt from "bcryptjs";
+import { IAuthTokenDAO } from "../DAO/AuthTokenDAO"; //TODO: upload to server and test
 
 export class UserServiceBE {
   private userDAO: IUserDAO;
-
-  constructor(dao: IUserDAO) {
+  private authTokenDAO: IAuthTokenDAO;
+  constructor(dao: IUserDAO, authTokenDAO: IAuthTokenDAO) {
     this.userDAO = dao;
+    this.authTokenDAO = authTokenDAO;
   }
 
   public processLogin = async (
@@ -38,24 +40,23 @@ export class UserServiceBE {
     };
 
     //check user exists
+    let usersDuplicated = await this.userDAO.getUserByAlias(request.alias);
+    console.log(usersDuplicated);
+    if (usersDuplicated.length > 0) {
+      throw new Error("User already exists");
+    }
 
-    //send image to S3, get url
+    //TODO: send image to S3, get url
 
     //Insert into user
     let hashedPassword = await this.hashPassword(request.password);
-    let successfulInsertion = await this.userDAO.insertNewUser(
-      user,
-      hashedPassword,
-    );
+    await this.userDAO.insertNewUser(user, hashedPassword);
 
     //Insert into AuthTokens, gets token, returns it
-    let token = FakeData.instance.authToken.dto;
+    let token = AuthToken.Generate();
+    await this.authTokenDAO.insert(token, user.alias);
 
-    //TODO: finish this
-    //let token = generateToken()
-    //let successfulToken = await this.authTokenDAO.insertToken()
-
-    return [user, token];
+    return [user, token.dto];
   };
 
   public fetchUser = async (
