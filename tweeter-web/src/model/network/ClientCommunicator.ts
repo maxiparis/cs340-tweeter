@@ -38,17 +38,21 @@ export class ClientCommunicator {
         // Be careful with the return type here. resp.json() returns Promise<any> which means there is no type checking on response.
         const response: RES = await resp.json();
         return response;
+      } else if (resp.status === 400 || resp.status === 400) {
+        const response = await resp.json();
+        throw new Error(response.message);
       } else {
         const error = await resp.json();
         throw new Error(error.errorMessage);
       }
     } catch (error) {
       console.error(error);
-      throw new Error(
-        `Client communicator ${params.method} failed:\n${
-          (error as Error).message
-        }`,
-      );
+      // throw new Error(
+      //   `Client communicator ${params.method} failed:\n${
+      //     (error as Error).message
+      //   }`,
+      // );
+      throw error;
     }
   }
 
