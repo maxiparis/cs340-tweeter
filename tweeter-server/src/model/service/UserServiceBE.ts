@@ -29,17 +29,28 @@ export class UserServiceBE {
     alias: string,
     password: string,
   ): Promise<[UserDto, AuthTokenDto]> => {
-    //hashpassword
-    let userQueryResponse = await this.userDAO.getUserByAlias(alias);
+    let userFound = await this.userDAO.getUserByAlias(alias);
+    if (userFound == null) {
+      throw new Error("User not found");
+    }
 
-    return this.generateFakeUserToken();
+    let passwordMatches = await this.comparePassword(
+      password,
+      userFound.hashedPassword,
+    );
+
+    if (!passwordMatches) {
+      throw new Error("Bad credentials");
+    }
+
+    //create an AuthToken
+    let token = await this.createAuthTokenForUser(alias);
+    return [userFound.dto(), token];
   };
 
   public processRegister = async (
     request: RegisterRequest,
   ): Promise<[UserDto, AuthTokenDto]> => {
-    // const user = FakeData.instance.firstUser;
-
     //check user exists
     let existentUser = await this.userDAO.getUserByAlias(request.alias);
     if (existentUser != null) {
@@ -61,12 +72,9 @@ export class UserServiceBE {
     //Insert into user
     let hashedPassword = await this.hashPassword(request.password);
     await this.userDAO.insertNewUser(user, hashedPassword);
+    let token = await this.createAuthTokenForUser(user.alias);
 
-    //Insert into AuthTokens, gets token, returns it
-    let token = AuthToken.Generate();
-    await this.authTokenDAO.insert(token, user.alias);
-
-    return [user, token.dto];
+    return [user, token];
   };
 
   public fetchUser = async (
@@ -89,8 +97,22 @@ export class UserServiceBE {
     return [user!.dto, FakeData.instance.authToken.dto];
   }
 
-  async hashPassword(plainTextPassword: string): Promise<string> {
+  private async hashPassword(plainTextPassword: string): Promise<string> {
     const saltRounds = 3;
     return await bcrypt.hash(plainTextPassword, saltRounds);
+  }
+
+  private async comparePassword(
+    plainTextPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return await bcrypt.compare(plainTextPassword, hashedPassword);
+  }
+
+  private async createAuthTokenForUser(alias: string): Promise<AuthTokenDto> {
+    //Insert into AuthTokens, gets token, returns it
+    let token = AuthToken.Generate();
+    await this.authTokenDAO.insert(token, alias);
+    return token.dto;
   }
 }

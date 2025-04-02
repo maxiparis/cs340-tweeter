@@ -1,16 +1,15 @@
 import {
-  DeleteCommand,
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
-  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { UserDto } from "tweeter-shared";
+import { UserEntity } from "../entity/UserEntity";
 
 export interface IUserDAO {
   insertNewUser(user: UserDto, hashed: string): Promise<void>;
-  getUserByAlias(alias: string): Promise<UserDto | null>; //TODO: maybe fix later on
+  getUserByAlias(alias: string): Promise<UserEntity | null>;
 }
 
 export class UserDAO implements IUserDAO {
@@ -21,8 +20,6 @@ export class UserDAO implements IUserDAO {
   readonly lastNameAttr = "lastName";
   readonly imageUrlAttr = "imageUrl";
   readonly hashedPasswordAttr = "hashedPassword";
-
-  // readonly indexName = "follows_index";
 
   private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
@@ -40,15 +37,17 @@ export class UserDAO implements IUserDAO {
     let response = await this.client.send(new QueryCommand(params));
     if (response.Items?.length) {
       const item = response.Items[0];
-      return {
-        alias: item[this.aliasAttr],
-        firstName: item[this.firstNameAttr],
-        lastName: item[this.lastNameAttr],
-        imageUrl: item[this.imageUrlAttr],
-      } as UserDto;
+      return new UserEntity(
+        {
+          alias: item[this.aliasAttr],
+          firstName: item[this.firstNameAttr],
+          lastName: item[this.lastNameAttr],
+          imageUrl: item[this.imageUrlAttr],
+        } as UserDto,
+        item[this.hashedPasswordAttr],
+      );
     }
     return null;
-    // return response.Items?.[0] || null; // if we didn't find a user, then return null
   }
 
   async insertNewUser(user: UserDto, hashed: string): Promise<void> {
