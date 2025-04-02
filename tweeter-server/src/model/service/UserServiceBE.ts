@@ -29,6 +29,9 @@ export class UserServiceBE {
     alias: string,
     password: string,
   ): Promise<[UserDto, AuthTokenDto]> => {
+    //hashpassword
+    let userQueryResponse = await this.userDAO.getUserByAlias(alias);
+
     return this.generateFakeUserToken();
   };
 
@@ -38,9 +41,8 @@ export class UserServiceBE {
     // const user = FakeData.instance.firstUser;
 
     //check user exists
-    let usersDuplicated = await this.userDAO.getUserByAlias(request.alias);
-    console.log(usersDuplicated);
-    if (usersDuplicated.length > 0) {
+    let existentUser = await this.userDAO.getUserByAlias(request.alias);
+    if (existentUser != null) {
       throw new Error("User already exists");
     }
 

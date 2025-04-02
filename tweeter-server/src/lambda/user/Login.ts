@@ -12,15 +12,21 @@ export const handler = async (
     new AuthTokenDAO(),
     new ProfilePicturesDAO(),
   );
-  const [user, token] = await service.processLogin(
-    request.alias,
-    request.password,
-  );
 
-  return {
-    success: true,
-    message: null,
-    user,
-    token,
-  };
+  try {
+    const [user, token] = await service.processLogin(
+      request.alias,
+      request.password,
+    );
+
+    return {
+      success: true,
+      message: null,
+      user,
+      token,
+    };
+  } catch (error) {
+    // @ts-ignore
+    throw new Error("[BadRequest] " + error.message);
+  }
 };
