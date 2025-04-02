@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script is helpful for when I am updating the backend and need to update the layers and lamdbas.
+# This script is helpful for when I am updating the backend and need to update the layers and lambdas.
 
 set -e
 
