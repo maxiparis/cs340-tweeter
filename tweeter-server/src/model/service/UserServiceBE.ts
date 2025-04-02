@@ -10,14 +10,25 @@ import {
 import { Buffer } from "buffer";
 import { IUserDAO, UserDAO } from "../DAO/UserDAO";
 import bcrypt from "bcryptjs";
-import { IAuthTokenDAO } from "../DAO/AuthTokenDAO"; //TODO: upload to server and test
+import { IAuthTokenDAO } from "../DAO/AuthTokenDAO";
+import {
+  IProfilePicturesDAO,
+  ProfilePicturesDAO,
+} from "../DAO/ProfilePicturesDAO"; //TODO: upload to server and test
 
 export class UserServiceBE {
   private userDAO: IUserDAO;
   private authTokenDAO: IAuthTokenDAO;
-  constructor(dao: IUserDAO, authTokenDAO: IAuthTokenDAO) {
+  private profilePicuresDAO: IProfilePicturesDAO;
+
+  constructor(
+    dao: IUserDAO,
+    authTokenDAO: IAuthTokenDAO,
+    profilePicturesDAO: IProfilePicturesDAO,
+  ) {
     this.userDAO = dao;
     this.authTokenDAO = authTokenDAO;
+    this.profilePicuresDAO = profilePicturesDAO;
   }
 
   public processLogin = async (
@@ -31,13 +42,6 @@ export class UserServiceBE {
     request: RegisterRequest,
   ): Promise<[UserDto, AuthTokenDto]> => {
     // const user = FakeData.instance.firstUser;
-    const user: UserDto = {
-      alias: request.alias,
-      firstName: request.firstName,
-      imageUrl:
-        "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png",
-      lastName: request.lastName,
-    };
 
     //check user exists
     let usersDuplicated = await this.userDAO.getUserByAlias(request.alias);
@@ -46,7 +50,17 @@ export class UserServiceBE {
       throw new Error("User already exists");
     }
 
-    //TODO: send image to S3, get url
+    let imageURL = await this.profilePicuresDAO.putImage(
+      request.alias,
+      request.imageStringBase64,
+    );
+
+    let user: UserDto = {
+      alias: request.alias,
+      firstName: request.firstName,
+      imageUrl: imageURL,
+      lastName: request.lastName,
+    };
 
     //Insert into user
     let hashedPassword = await this.hashPassword(request.password);
