@@ -78,7 +78,9 @@ export class UserServiceBE {
     token: string,
     alias: string,
   ): Promise<UserDto | null> => {
-    return FakeData.instance.findUserByAlias(alias)?.dto ?? null;
+    // return FakeData.instance.findUserByAlias(alias)?.dto ?? null;
+    let foundUserEntity = await this.userDAO.getUserByAlias(alias);
+    return foundUserEntity?.dto() ?? null;
   };
 
   public processLogout = async (token: string): Promise<void> => {
@@ -90,10 +92,10 @@ export class UserServiceBE {
 
   // ---------------------------------------
   // ---------------- Utils ----------------
-  private generateFakeUserToken(): [UserDto, AuthTokenDto] {
-    const user = FakeData.instance.firstUser;
-    return [user!.dto, FakeData.instance.authToken.dto];
-  }
+  // private generateFakeUserToken(): [UserDto, AuthTokenDto] {
+  //   const user = FakeData.instance.firstUser;
+  //   return [user!.dto, FakeData.instance.authToken.dto];
+  // }
 
   private async hashPassword(plainTextPassword: string): Promise<string> {
     const saltRounds = 3;

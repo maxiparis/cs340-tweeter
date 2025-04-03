@@ -3,11 +3,12 @@ import {
   CheckIsFollowerResponse,
 } from "tweeter-shared";
 import { FollowServiceBE } from "../../model/service/FollowServiceBE";
+import { DynamoFactoryDAO } from "../../model/DAO/factory/DynamoFactoryDAO";
 
 export const handler = async (
   request: CheckIsFollowerRequest,
 ): Promise<CheckIsFollowerResponse> => {
-  const followService = new FollowServiceBE();
+  const followService = new FollowServiceBE(new DynamoFactoryDAO());
   const isFollower = await followService.fetchIsFollowerStatus(
     request.token,
     request.userAlias,

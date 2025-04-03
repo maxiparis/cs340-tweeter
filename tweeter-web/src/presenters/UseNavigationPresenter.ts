@@ -36,6 +36,6 @@ export default class UseNavigationPresenter extends Presenter<UserNavigationView
 
   private extractAlias = (value: string): string => {
     const index = value.indexOf("@");
-    return value.substring(index);
+    return value.substring(index + 1); //to avoid sending the @ to the backend
   };
 }
