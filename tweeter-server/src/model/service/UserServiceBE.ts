@@ -82,7 +82,8 @@ export class UserServiceBE {
   };
 
   public processLogout = async (token: string): Promise<void> => {
-    //Identify user with that token and perform DB operations.
+    //Identify user with that token and revoke it
+    await this.authTokenDAO.revoke(token);
 
     return;
   };

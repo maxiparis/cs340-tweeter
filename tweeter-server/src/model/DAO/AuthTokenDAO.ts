@@ -1,9 +1,14 @@
 import { AuthTokenDto } from "tweeter-shared";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  DynamoDBDocumentClient,
+  PutCommand,
+  UpdateCommand,
+} from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
 export interface IAuthTokenDAO {
   insert(authToken: AuthTokenDto, alias: string): Promise<void>;
+  revoke(token: string): Promise<void>;
 }
 
 export class AuthTokenDAO implements IAuthTokenDAO {
@@ -36,5 +41,24 @@ export class AuthTokenDAO implements IAuthTokenDAO {
       },
     };
     await this.client.send(new PutCommand(params));
+  }
+
+  async revoke(token: string): Promise<void> {
+    try {
+      const params = {
+        TableName: this.tableName,
+        Key: {
+          [this.tokenAttr]: token,
+        },
+        UpdateExpression: `SET ${this.revokedAttr} = :revoked`,
+        ExpressionAttributeValues: {
+          ":revoked": true,
+        },
+      };
+      await this.client.send(new UpdateCommand(params));
+    } catch (error) {
+      // do nothing
+      console.log(error);
+    }
   }
 }
