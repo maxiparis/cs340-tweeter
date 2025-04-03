@@ -11,7 +11,8 @@ export class AuthTokenDAO implements IAuthTokenDAO {
 
   readonly tokenAttr = "token";
   readonly aliasAttr = "alias";
-  readonly dateCreated = "date_created";
+  readonly dateCreatedAttr = "date_created";
+  readonly revokedAttr = "revoked";
   private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
   constructor() {}
@@ -30,7 +31,8 @@ export class AuthTokenDAO implements IAuthTokenDAO {
       Item: {
         [this.tokenAttr]: authToken.token,
         [this.aliasAttr]: alias,
-        [this.dateCreated]: authToken.timestamp,
+        [this.dateCreatedAttr]: authToken.timestamp,
+        [this.revokedAttr]: false,
       },
     };
     await this.client.send(new PutCommand(params));
