@@ -1,17 +1,11 @@
 import { UserServiceBE } from "../../model/service/UserServiceBE";
 import { LoginRequest, LoginResponse } from "tweeter-shared";
-import { UserDAO } from "../../model/DAO/UserDAO";
-import { AuthTokenDAO } from "../../model/DAO/AuthTokenDAO";
-import { ProfilePicturesDAO } from "../../model/DAO/ProfilePicturesDAO";
+import { DynamoFactoryDAO } from "../../model/DAO/factory/DynamoFactoryDAO";
 
 export const handler = async (
   request: LoginRequest,
 ): Promise<LoginResponse> => {
-  const service = new UserServiceBE(
-    new UserDAO(),
-    new AuthTokenDAO(),
-    new ProfilePicturesDAO(),
-  );
+  const service = new UserServiceBE(new DynamoFactoryDAO());
 
   try {
     const [user, token] = await service.processLogin(

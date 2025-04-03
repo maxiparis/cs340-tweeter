@@ -9,20 +9,17 @@ import { IUserDAO } from "../DAO/UserDAO";
 import bcrypt from "bcryptjs";
 import { IAuthTokenDAO } from "../DAO/AuthTokenDAO";
 import { IProfilePicturesDAO } from "../DAO/ProfilePicturesDAO";
+import { IFactoryDAO } from "../DAO/factory/IFactoryDAO";
 
 export class UserServiceBE {
   private userDAO: IUserDAO;
   private authTokenDAO: IAuthTokenDAO;
   private profilePicturesDAO: IProfilePicturesDAO;
 
-  constructor(
-    dao: IUserDAO,
-    authTokenDAO: IAuthTokenDAO,
-    profilePicturesDAO: IProfilePicturesDAO,
-  ) {
-    this.userDAO = dao;
-    this.authTokenDAO = authTokenDAO;
-    this.profilePicturesDAO = profilePicturesDAO;
+  constructor(factoryDAO: IFactoryDAO) {
+    this.userDAO = factoryDAO.getUserDAO();
+    this.authTokenDAO = factoryDAO.getAuthTokenDAO();
+    this.profilePicturesDAO = factoryDAO.getProfilePicturesDAO();
   }
 
   public processLogin = async (
