@@ -2,16 +2,19 @@ import { FakeData, User, UserDto } from "tweeter-shared";
 import { IFollowsDAO } from "../DAO/factory/FollowsDAO";
 import { IFactoryDAO } from "../DAO/factory/IFactoryDAO";
 import { IAuthTokenDAO } from "../DAO/AuthTokenDAO";
+import { IUserDAO } from "../DAO/UserDAO";
 
 export type FollowOperation = "follow" | "unfollow";
 
 export class FollowServiceBE {
   private followsDAO: IFollowsDAO;
   private authtokenDAO: IAuthTokenDAO;
+  private userDAO: IUserDAO;
 
   constructor(factoryDAO: IFactoryDAO) {
     this.followsDAO = factoryDAO.getFollowsDAO();
     this.authtokenDAO = factoryDAO.getAuthTokenDAO();
+    this.userDAO = factoryDAO.getUserDAO();
   }
 
   public async fetchMoreFollowers(
@@ -68,7 +71,15 @@ export class FollowServiceBE {
     // Do logic in DB according to operation
     // ......
     if (operation === "follow") {
-      await this.followsDAO.follow(aliasSender, userToFollowUnfollow);
+      let senderUser = await this.userDAO.getUserByAlias(aliasSender);
+      let receiverUser =
+        await this.userDAO.getUserByAlias(userToFollowUnfollow);
+
+      if (senderUser == null || receiverUser == null) {
+        throw new Error("Sender or receiver not found");
+      }
+
+      await this.followsDAO.follow(senderUser.dto(), receiverUser.dto());
     } else {
       // unfollow
       await this.followsDAO.unfollow(aliasSender, userToFollowUnfollow);

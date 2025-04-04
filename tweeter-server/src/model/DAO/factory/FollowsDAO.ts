@@ -5,6 +5,7 @@ import {
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { UserDto } from "tweeter-shared";
 
 // ------------------------------------------
 // ---------------- IFollowsDAO ----------------
@@ -12,7 +13,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 export interface IFollowsDAO {
   getFolloweesCount(alias: string): Promise<number>;
   getFollowersCount(followerAlias: string): Promise<number>;
-  follow(sender: string, receiver: string): Promise<void>;
+  follow(sender: UserDto, receiver: UserDto): Promise<void>;
   unfollow(sender: string, receiver: string): Promise<void>;
   checkIsFollower(
     followerAlias: string,
@@ -29,8 +30,9 @@ export class FollowsDAO implements IFollowsDAO {
 
   readonly followerHandleAttr = "follower_handle";
   readonly followeeHandleAttr = "followee_handle";
-  readonly followeeNameAttr = "followee_name";
-  readonly followerNameAttr = "follower_name";
+  readonly followerUserAttr = "follower_user";
+  readonly followeeUserAttr = "followee_user";
+
   private readonly client = DynamoDBDocumentClient.from(new DynamoDBClient());
 
   constructor() {}
@@ -65,12 +67,14 @@ export class FollowsDAO implements IFollowsDAO {
   }
 
   // Sender will follow receiver
-  async follow(sender: string, receiver: string): Promise<void> {
+  async follow(sender: UserDto, receiver: UserDto): Promise<void> {
     const params = {
       TableName: this.tableName,
       Item: {
-        follower_handle: sender,
-        followee_handle: receiver,
+        follower_handle: sender.alias,
+        followee_handle: receiver.alias,
+        [this.followerUserAttr]: JSON.stringify(sender),
+        [this.followeeUserAttr]: JSON.stringify(receiver),
       },
     };
 
