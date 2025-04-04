@@ -36,7 +36,8 @@ export class FollowServiceBE {
     user: string,
     selectedUser: string,
   ) {
-    return FakeData.instance.isFollower();
+    await this.validateToken(authToken);
+    return await this.followsDAO.checkIsFollower(user, selectedUser);
   }
 
   public async fetchFolloweeCount(authToken: string, user: string) {

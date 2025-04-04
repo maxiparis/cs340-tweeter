@@ -6,12 +6,22 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
+// ------------------------------------------
+// ---------------- IFollowsDAO ----------------
+
 export interface IFollowsDAO {
   getFolloweesCount(alias: string): Promise<number>;
   getFollowersCount(followerAlias: string): Promise<number>;
   follow(sender: string, receiver: string): Promise<void>;
   unfollow(sender: string, receiver: string): Promise<void>;
+  checkIsFollower(
+    followerAlias: string,
+    followeeAlias: string,
+  ): Promise<boolean>;
 }
+
+// ------------------------------------------
+// ---------------- FollowsDAO ----------------
 
 export class FollowsDAO implements IFollowsDAO {
   readonly tableName = "follows";
@@ -78,5 +88,24 @@ export class FollowsDAO implements IFollowsDAO {
     };
 
     await this.client.send(new DeleteCommand(params));
+  }
+
+  //Returns true if followerAlias follows followeeAlias
+  async checkIsFollower(
+    followerAlias: string,
+    followeeAlias: string,
+  ): Promise<boolean> {
+    const params = {
+      TableName: this.tableName,
+      KeyConditionExpression:
+        "follower_handle = :follower_handle AND followee_handle = :followee_handle",
+      ExpressionAttributeValues: {
+        ":follower_handle": followerAlias,
+        ":followee_handle": followeeAlias,
+      },
+    };
+
+    let response = await this.client.send(new QueryCommand(params));
+    return (response.Items?.length ?? -1) > 0;
   }
 }
