@@ -24,6 +24,7 @@ export class FollowServiceBE {
     lastItem: UserDto | null,
   ): Promise<[UserDto[], boolean]> {
     await this.validateToken(token);
+
     let response = await this.followsDAO.getPageOfFollowers(
       userAlias,
       pageSize,
@@ -39,6 +40,8 @@ export class FollowServiceBE {
     pageSize: number,
     lastItem: UserDto | null,
   ): Promise<[UserDto[], boolean]> {
+    //TODO: WORK HERE NEX
+
     return this.getFakePageOfUsers(lastItem, pageSize, userAlias);
   }
 

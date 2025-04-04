@@ -6,7 +6,6 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { UserDto } from "tweeter-shared";
-import { FollowEntity } from "../../entity/FollowEntity";
 import { DataPage } from "../../entity/DataPage";
 
 // ------------------------------------------

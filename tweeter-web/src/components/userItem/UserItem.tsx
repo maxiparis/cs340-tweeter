@@ -28,10 +28,10 @@ const UserItem = (props: Props) => {
               </b>{" "}
               -{" "}
               <Link
-                to={props.value.alias}
+                to={`@${props.value.alias}`}
                 onClick={(event) => navigateToUser(event)}
               >
-                {props.value.alias}
+                {`@${props.value.alias}`}
               </Link>
             </h2>
           </div>
