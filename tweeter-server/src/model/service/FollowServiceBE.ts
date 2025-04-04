@@ -23,8 +23,16 @@ export class FollowServiceBE {
     pageSize: number,
     lastItem: UserDto | null,
   ): Promise<[UserDto[], boolean]> {
-    return this.getFakePageOfUsers(lastItem, pageSize, userAlias);
+    await this.validateToken(token);
+    let response = await this.followsDAO.getPageOfFollowers(
+      userAlias,
+      pageSize,
+      lastItem?.alias ?? undefined,
+    );
+
+    return [response.values, response.hasMorePages];
   }
+
   public async fetchMoreFollowees(
     token: string,
     userAlias: string,

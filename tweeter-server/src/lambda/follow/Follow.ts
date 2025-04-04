@@ -1,5 +1,5 @@
 import { FollowServiceBE } from "../../model/service/FollowServiceBE";
-import { FollowerFolloweeCountResponse, TweeterRequest } from "tweeter-shared";
+import { FollowerFolloweeCountResponse } from "tweeter-shared";
 import { UserAliasRequest } from "tweeter-shared/dist/model/net/request/TweeterRequest";
 import { DynamoFactoryDAO } from "../../model/DAO/factory/DynamoFactoryDAO";
 

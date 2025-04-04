@@ -6,6 +6,8 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { UserDto } from "tweeter-shared";
+import { FollowEntity } from "../../entity/FollowEntity";
+import { DataPage } from "../../entity/DataPage";
 
 // ------------------------------------------
 // ---------------- IFollowsDAO ----------------
@@ -19,6 +21,11 @@ export interface IFollowsDAO {
     followerAlias: string,
     followeeAlias: string,
   ): Promise<boolean>;
+  getPageOfFollowers(
+    followeeHandle: string,
+    pageSize: number,
+    lastFollowerHandle: string | undefined,
+  ): Promise<DataPage<UserDto>>;
 }
 
 // ------------------------------------------
@@ -111,5 +118,42 @@ export class FollowsDAO implements IFollowsDAO {
 
     let response = await this.client.send(new QueryCommand(params));
     return (response.Items?.length ?? -1) > 0;
+  }
+
+  async getPageOfFollowers(
+    followeeHandle: string,
+    pageSize: number,
+    lastFollowerHandle: string | undefined,
+  ): Promise<DataPage<UserDto>> {
+    const params = {
+      IndexName: this.indexName, // Use the index
+      KeyConditionExpression: "followee_handle = :followee_handle",
+      ExpressionAttributeValues: {
+        ":followee_handle": followeeHandle,
+      },
+      TableName: this.tableName,
+      Limit: pageSize,
+      ExclusiveStartKey:
+        lastFollowerHandle === undefined
+          ? undefined
+          : {
+              [this.followerHandleAttr]: lastFollowerHandle,
+              [this.followeeHandleAttr]: followeeHandle,
+            },
+    };
+
+    const items: UserDto[] = [];
+    const data = await this.client.send(new QueryCommand(params));
+    const hasMorePages = data.LastEvaluatedKey !== undefined;
+    data.Items?.forEach((item) => {
+      // Parse the stringified JSON to handle cases where the attribute is a JSON string
+      let user =
+        typeof item[this.followerUserAttr] === "string"
+          ? (JSON.parse(item[this.followerUserAttr]) as UserDto)
+          : (item[this.followerUserAttr] as UserDto);
+
+      items.push(user);
+    });
+    return new DataPage<UserDto>(items, hasMorePages);
   }
 }
