@@ -11,7 +11,7 @@ import { AuthTokenEntity } from "../entity/AuthTokenEntity";
 export interface IAuthTokenDAO {
   insert(authToken: AuthTokenDto, alias: string): Promise<void>;
   revoke(token: string): Promise<void>;
-  validToken(token: string): Promise<boolean>;
+  validToken(token: string): Promise<string | null>;
 }
 
 export class AuthTokenDAO implements IAuthTokenDAO {
@@ -65,6 +65,7 @@ export class AuthTokenDAO implements IAuthTokenDAO {
     }
   }
 
+  // If token is valid, return the alias of the user. If not, return null
   async validToken(token: string) {
     const params = {
       TableName: this.tableName,
@@ -88,7 +89,7 @@ export class AuthTokenDAO implements IAuthTokenDAO {
       } as AuthTokenEntity;
 
       if (tokenEntity.revoked) {
-        return false;
+        return null;
       }
 
       const now = new Date().getTime();
@@ -98,9 +99,9 @@ export class AuthTokenDAO implements IAuthTokenDAO {
       // Token can't have more than one hour, else it is expired
       if (differenceInMillis <= 3600000) {
         // 3600000 ms = 1 hour
-        return true;
+        return tokenEntity.alias;
       }
     }
-    return false;
+    return null;
   }
 }

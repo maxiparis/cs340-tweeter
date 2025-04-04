@@ -1,9 +1,16 @@
-import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import {
+  DeleteCommand,
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
+} from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
 export interface IFollowsDAO {
   getFolloweesCount(alias: string): Promise<number>;
   getFollowersCount(followerAlias: string): Promise<number>;
+  follow(sender: string, receiver: string): Promise<void>;
+  unfollow(sender: string, receiver: string): Promise<void>;
 }
 
 export class FollowsDAO implements IFollowsDAO {
@@ -45,5 +52,31 @@ export class FollowsDAO implements IFollowsDAO {
 
     const output = await this.client.send(new QueryCommand(params));
     return output.Items?.length || 0;
+  }
+
+  // Sender will follow receiver
+  async follow(sender: string, receiver: string): Promise<void> {
+    const params = {
+      TableName: this.tableName,
+      Item: {
+        follower_handle: sender,
+        followee_handle: receiver,
+      },
+    };
+
+    await this.client.send(new PutCommand(params));
+  }
+
+  // Sender will unfollow receiver
+  async unfollow(sender: string, receiver: string): Promise<void> {
+    const params = {
+      TableName: this.tableName,
+      Key: {
+        [this.followerHandleAttr]: sender,
+        [this.followeeHandleAttr]: receiver,
+      },
+    };
+
+    await this.client.send(new DeleteCommand(params));
   }
 }

@@ -49,23 +49,32 @@ export class FollowServiceBE {
     return await this.followsDAO.getFollowersCount(user);
   }
 
-  private async validateToken(authToken: string) {
-    let tokenValid = await this.authtokenDAO.validToken(authToken);
-    if (!tokenValid) {
+  private async validateToken(authToken: string): Promise<string> {
+    let userValidated = await this.authtokenDAO.validToken(authToken);
+    if (userValidated == null) {
       throw new Error("Invalid token");
     }
+    return userValidated;
   }
 
   public async updateFollowStatus(
     authToken: string,
-    userToFollow: string,
+    userToFollowUnfollow: string,
     operation: FollowOperation,
   ): Promise<[followerCount: number, followeeCount: number]> {
+    let aliasSender = await this.validateToken(authToken);
+
     // Do logic in DB according to operation
     // ......
+    if (operation === "follow") {
+      await this.followsDAO.follow(aliasSender, userToFollowUnfollow);
+    } else {
+      // unfollow
+      await this.followsDAO.unfollow(aliasSender, userToFollowUnfollow);
+    }
 
     const { followerCount, followeeCount } =
-      await this.fetchFollowerFolloweeCount(authToken, userToFollow);
+      await this.fetchFollowerFolloweeCount(userToFollowUnfollow);
 
     return [followerCount, followeeCount];
   }
@@ -73,19 +82,18 @@ export class FollowServiceBE {
   // ---------------------------------------
   // ---------------- UTILS ----------------
 
-  private async fetchFollowerFolloweeCount(
-    authToken: string,
-    userToUnfollow: string,
-  ) {
-    const followerCount = await this.fetchFollowerCount(
-      authToken,
-      userToUnfollow,
-    );
-    const followeeCount = await this.fetchFolloweeCount(
-      authToken,
-      userToUnfollow,
-    );
+  private async fetchFollowerFolloweeCount(userAlias: string) {
+    const followerCount = await this.fetchFollowerCountNoToken(userAlias);
+    const followeeCount = await this.fetchFolloweeCountNoToken(userAlias);
     return { followerCount, followeeCount };
+  }
+
+  private async fetchFollowerCountNoToken(user: string) {
+    return await this.followsDAO.getFollowersCount(user);
+  }
+
+  private async fetchFolloweeCountNoToken(user: string) {
+    return await this.followsDAO.getFolloweesCount(user);
   }
 
   private async getFakePageOfUsers(
