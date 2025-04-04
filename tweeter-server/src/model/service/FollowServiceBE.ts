@@ -1,7 +1,6 @@
 import { FakeData, User, UserDto } from "tweeter-shared";
 import { IFollowsDAO } from "../DAO/factory/FollowsDAO";
 import { IFactoryDAO } from "../DAO/factory/IFactoryDAO";
-import { IUserDAO } from "../DAO/UserDAO";
 import { IAuthTokenDAO } from "../DAO/AuthTokenDAO";
 
 export type FollowOperation = "follow" | "unfollow";
@@ -41,18 +40,20 @@ export class FollowServiceBE {
   }
 
   public async fetchFolloweeCount(authToken: string, user: string) {
-    //check authToken is correct
-    let tokenValid = await this.authtokenDAO.validToken(authToken);
-    if (!tokenValid) {
-      throw new Error("Invalid token");
-    }
-
-    // return FakeData.instance.getFolloweeCount(user);
+    await this.validateToken(authToken);
     return await this.followsDAO.getFolloweesCount(user);
   }
 
   public async fetchFollowerCount(authToken: string, user: string) {
-    return FakeData.instance.getFollowerCount(user);
+    await this.validateToken(authToken);
+    return await this.followsDAO.getFollowersCount(user);
+  }
+
+  private async validateToken(authToken: string) {
+    let tokenValid = await this.authtokenDAO.validToken(authToken);
+    if (!tokenValid) {
+      throw new Error("Invalid token");
+    }
   }
 
   public async updateFollowStatus(

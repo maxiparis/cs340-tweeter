@@ -3,6 +3,7 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
 export interface IFollowsDAO {
   getFolloweesCount(alias: string): Promise<number>;
+  getFollowersCount(followerAlias: string): Promise<number>;
 }
 
 export class FollowsDAO implements IFollowsDAO {
@@ -24,6 +25,21 @@ export class FollowsDAO implements IFollowsDAO {
       KeyConditionExpression: "follower_handle = :follower_handle",
       ExpressionAttributeValues: {
         ":follower_handle": followerAlias,
+      },
+    };
+
+    const output = await this.client.send(new QueryCommand(params));
+    return output.Items?.length || 0;
+  }
+
+  // Returns the number of people that follows followeeAlias.
+  async getFollowersCount(followeeAlias: string): Promise<number> {
+    const params = {
+      TableName: this.tableName,
+      IndexName: this.indexName,
+      KeyConditionExpression: "followee_handle = :followee_handle",
+      ExpressionAttributeValues: {
+        ":followee_handle": followeeAlias,
       },
     };
 
