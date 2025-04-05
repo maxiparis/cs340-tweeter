@@ -15,7 +15,7 @@ export interface IFeedDAO {
 // ---------------- Concrete Class ----------------
 
 export class FeedDAO implements IFeedDAO {
-  readonly tableName = "tweeter-story";
+  readonly tableName = "tweeter-feed";
 
   readonly receiverAliasAttr = "receiver_alias";
   readonly isoDateSenderAttr = "isodate_sender";
