@@ -35,7 +35,14 @@ export class StatusServiceBE extends AuthServiceBE {
     pageSize: number,
     lastItem: StatusDto | null,
   ): Promise<[StatusDto[], boolean]> {
-    return this.getFakeStoryFeedItems(lastItem, pageSize);
+    await this.validateToken(authToken);
+
+    let results = await this.storyDAO.getStoryItems(
+      userAlias,
+      pageSize,
+      lastItem?.timestamp ?? undefined,
+    );
+    return [results.values, results.hasMorePages];
   }
 
   public async postStatus(
