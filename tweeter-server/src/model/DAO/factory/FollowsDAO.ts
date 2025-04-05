@@ -25,6 +25,11 @@ export interface IFollowsDAO {
     pageSize: number,
     lastFollowerHandle: string | undefined,
   ): Promise<DataPage<UserDto>>;
+  getPageOfFollowees(
+    followerHandle: string,
+    pageSize: number,
+    lastFolloweeHandle: string | undefined,
+  ): Promise<DataPage<UserDto>>;
 }
 
 // ------------------------------------------
@@ -150,6 +155,43 @@ export class FollowsDAO implements IFollowsDAO {
         typeof item[this.followerUserAttr] === "string"
           ? (JSON.parse(item[this.followerUserAttr]) as UserDto)
           : (item[this.followerUserAttr] as UserDto);
+
+      items.push(user);
+    });
+    return new DataPage<UserDto>(items, hasMorePages);
+  }
+
+  async getPageOfFollowees(
+    followerHandle: string,
+    pageSize: number,
+    lastFolloweeHandle: string | undefined,
+  ): Promise<DataPage<UserDto>> {
+    const params = {
+      KeyConditionExpression: "follower_handle = :follower_handle",
+      ExpressionAttributeValues: {
+        ":follower_handle": followerHandle,
+      },
+      TableName: this.tableName,
+      Limit: pageSize,
+      ExclusiveStartKey:
+        lastFolloweeHandle === undefined
+          ? undefined
+          : {
+              [this.followerHandleAttr]: followerHandle,
+              [this.followeeHandleAttr]: lastFolloweeHandle,
+            },
+    };
+
+    const items: UserDto[] = [];
+    const data = await this.client.send(new QueryCommand(params));
+    const hasMorePages = data.LastEvaluatedKey !== undefined;
+
+    data.Items?.forEach((item) => {
+      // Parse the stringified JSON to handle cases where the attribute is a JSON string
+      let user =
+        typeof item[this.followeeUserAttr] === "string"
+          ? (JSON.parse(item[this.followeeUserAttr]) as UserDto)
+          : (item[this.followeeUserAttr] as UserDto);
 
       items.push(user);
     });
