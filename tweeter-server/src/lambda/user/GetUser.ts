@@ -5,12 +5,17 @@ import { DynamoFactoryDAO } from "../../model/DAO/factory/DynamoFactoryDAO";
 export const handler = async (
   request: UserAliasRequest,
 ): Promise<GetUserResponse> => {
-  const service = new UserServiceBE(new DynamoFactoryDAO());
-  const user = await service.fetchUser(request.token, request.userAlias);
+  try {
+    const service = new UserServiceBE(new DynamoFactoryDAO());
+    const user = await service.fetchUser(request.token, request.userAlias);
 
-  return {
-    success: true,
-    message: null,
-    user: user,
-  };
+    return {
+      success: true,
+      message: null,
+      user: user,
+    };
+  } catch (error) {
+    // @ts-ignore
+    throw new Error("[BadRequest] " + error.message);
+  }
 };

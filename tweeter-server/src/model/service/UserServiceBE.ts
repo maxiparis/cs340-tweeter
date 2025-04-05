@@ -77,6 +77,7 @@ export class UserServiceBE extends AuthServiceBE {
     token: string,
     alias: string,
   ): Promise<UserDto | null> => {
+    await this.validateToken(token);
     let foundUserEntity = await this.userDAO.getUserByAlias(alias);
     return foundUserEntity?.dto() ?? null;
   };
