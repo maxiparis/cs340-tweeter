@@ -35,10 +35,10 @@ const StatusItem = ({ item }: Props) => {
                 </b>{" "}
                 -{" "}
                 <Link
-                  to={item.user.alias}
+                  to={`@${item.user.alias}`}
                   onClick={(event) => navigateToUser(event)}
                 >
-                  {item.user.alias}
+                  {`@${item.user.alias}`}
                 </Link>
               </h2>
               {item.formattedDate}
