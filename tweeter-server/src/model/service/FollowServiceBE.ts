@@ -1,5 +1,5 @@
 import { FakeData, User, UserDto } from "tweeter-shared";
-import { IFollowsDAO } from "../DAO/factory/FollowsDAO";
+import { IFollowsDAO } from "../DAO/FollowsDAO";
 import { IFactoryDAO } from "../DAO/factory/IFactoryDAO";
 import { IAuthTokenDAO } from "../DAO/AuthTokenDAO";
 import { IUserDAO } from "../DAO/UserDAO";

@@ -6,10 +6,10 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { UserDto } from "tweeter-shared";
-import { DataPage } from "../../entity/DataPage";
+import { DataPage } from "../entity/DataPage";
 
-// ------------------------------------------
-// ---------------- IFollowsDAO ----------------
+// --------------------------------------------
+// ---------------- IFollowsDAO ---------------
 
 export interface IFollowsDAO {
   getFolloweesCount(alias: string): Promise<number>;
