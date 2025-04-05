@@ -199,6 +199,10 @@ export class FollowsDAO implements IFollowsDAO {
     return new DataPage<UserDto>(items, hasMorePages);
   }
 
+  /**
+   * @param alias
+   * @returns Promise<string[]> All the users that follow the alias (their followers page).
+   */
   async getFollowersAliases(alias: string): Promise<string[]> {
     const params = {
       TableName: this.tableName,
@@ -215,6 +219,32 @@ export class FollowsDAO implements IFollowsDAO {
     data.Items?.forEach((item) => {
       if (item[this.followerHandleAttr] !== undefined) {
         followers.push(item[this.followerHandleAttr] as string);
+      }
+    });
+
+    return followers;
+  }
+
+  /**
+   * @param alias
+   * @returns Promise<string[]> All the users that the alias follows to (their followees page).
+   */
+  async getFolloweeAliases(alias: string): Promise<string[]> {
+    const params = {
+      TableName: this.tableName,
+      // IndexName: this.indexName,
+      KeyConditionExpression: "follower_handle = :follower_handle",
+      ExpressionAttributeValues: {
+        ":follower_handle": alias,
+      },
+    };
+
+    const data = await this.client.send(new QueryCommand(params));
+    let followers: string[] = [];
+
+    data.Items?.forEach((item) => {
+      if (item[this.followeeHandleAttr] !== undefined) {
+        followers.push(item[this.followeeHandleAttr] as string);
       }
     });
 
