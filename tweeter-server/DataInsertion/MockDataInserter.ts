@@ -3,6 +3,8 @@ import { FollowsDAO } from "../src/model/DAO/FollowsDAO";
 import { UserDAO } from "../src/model/DAO/UserDAO";
 import { AuthTokenDAO } from "../src/model/DAO/AuthTokenDAO";
 import bcrypt from "bcryptjs";
+import { StoryDAO } from "../src/model/DAO/StoryDAO";
+import { StatusEntity } from "../src/model/entity/StatusEntity";
 
 const MALE_IMAGE_URL: string =
   "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
@@ -13,6 +15,7 @@ class MockDataInserter {
   followsDao = new FollowsDAO();
   userDao = new UserDAO();
   authTokenDAO = new AuthTokenDAO();
+  storyDAO = new StoryDAO();
 
   constructor() {}
 
@@ -48,6 +51,40 @@ class MockDataInserter {
     new User("Peter", "Peterson", "peter", this.generateImageURL()),
     new User("Rachel", "Rosen", "rachel", this.generateImageURL()),
     new User("Rose", "Rosen", "rose", this.generateImageURL()),
+  ];
+
+  readonly twitterPosts = [
+    "Had a great workout today! Thanks for the motivation, @allen . Check out my favorite fitness blog: https://fitlife.com",
+    "Just finished reading an amazing book! @amy , you need to read this one! More here: https://bookworm.com",
+    "Loving the new project! Couldn’t have done it without @bob ’s support. Check out my new portfolio: https://creativeworks.com",
+    "Caught up with @bonnie over coffee today! Always great conversations. Here's a fun article we discussed: https://coffeechat.com",
+    "Finally trying out this new restaurant in town! @chris , let’s go next time! Review here: https://foodieadventures.com",
+    "Big shoutout to @cindy for all the help on the team project! Also, check out this motivational podcast: https://teamtalk.com",
+    "Excited about the weekend plans! @dan , let’s catch up soon. Here’s the event we’re attending: https://weekendvibes.com",
+    "It’s always a pleasure to collaborate with @dee ! Check out the new update I worked on: https://technews.com",
+    "Learning so much from @elliott . If you're into tech, check out this blog post: https://devworld.com",
+    "Congrats to @elizabeth for landing that amazing opportunity! She deserves it. Read more about it here: https://careerhighlights.com",
+    "Had an awesome time at the concert last night! @frank , that was epic. Review and setlist here: https://concertbuzz.com",
+    "Just finished a painting I’ve been working on for weeks! @fran , I’d love your thoughts. See my work here: https://artgallery.com",
+    "Spending the day outdoors. @gary , we need to do this more often. Here's a great guide to the trails we explored: https://natureexplore.com",
+    "My latest project is finally live! Big thanks to @giovanna for the input. Check out the final product: https://designhub.com",
+    "Feeling inspired after meeting @henry ! He’s always so insightful. See his latest work here: https://innovatorhub.com",
+    "Caught up with @helen for a long walk and chat. Always so refreshing! Here's a blog post about healthy living: https://healthyhabits.com",
+    "Excited about the new app update! Thanks to @igor for all the debugging help. Release notes here: https://appdev.com",
+    "Just launched a new feature in our project! @isabel , your feedback was crucial. Check out the details: https://techtrends.com",
+    "What an amazing day at the conference! @justin , we should definitely present next time. Here’s the agenda: https://techconference.com",
+    "Had an inspiring conversation with @jill about mental health. Check out this article we talked about: https://mindmatters.com",
+    "Just wrapped up a great presentation! @kent , thanks for the suggestions. Watch the recording here: https://bizinsights.com",
+    "Planning my next travel destination. @kathy , what do you think of this place? Check out my travel blog: https://wanderlust.com",
+    "Feeling super grateful for my team. @lisa , you’re the best! Here’s an article on team collaboration: https://worktogether.com",
+    "Just finished a relaxing weekend getaway. @linda , you’d love this place! Full guide here: https://vacationvibes.com",
+    "Had a productive week! @mary , you’re such an inspiration. Check out my latest productivity tips: https://worksmart.com",
+    "Just got a new tech gadget. @nancy , you’ve got to check this out! Full review here: https://techreviewer.com",
+    "Exploring a new hobby this month! @olivia , you’d be into this too. Here’s a tutorial: https://hobbyists.com",
+    "Grateful for the feedback from @patricia on my design. Check out the project here: https://creatorshub.com",
+    "Had a blast brainstorming with @peter today. Can’t wait for the next steps! Here’s our whitepaper: https://businessideas.com",
+    "So proud of @rachel ’s accomplishments lately. Check out her latest article: https://thoughtleaders.com",
+    "Such an interesting conversation with @rose today about life in the city! Here’s the guide we talked about: https://citylife.com",
   ];
 
   // -----------------------------------------------
@@ -90,8 +127,30 @@ class MockDataInserter {
     }
   }
 
+  async insertPostsForOneUser(userAlias: string, numPosts: number) {
+    let userFound = this.getUserByAlias(userAlias);
+    if (userFound === undefined) {
+      console.log("stopping insertion of posts, user was undefined");
+      return;
+    }
+
+    for (let i = 0; i < numPosts; i++) {
+      console.log(`inserting post for ${userAlias}`, i);
+      let entity = new StatusEntity({
+        post: this.twitterPosts[i],
+        user: userFound.dto,
+        timestamp: Date.now(),
+      });
+      await this.storyDAO.insert(entity);
+    }
+  }
+
   // ------------------------------------------
   // ---------------- Helpers -----------------
+
+  getUserByAlias(alias: string): User | undefined {
+    return this.allUsers.find((user) => user.alias === alias);
+  }
 
   private generateSixDigitHash(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -112,4 +171,5 @@ class MockDataInserter {
 // ---------------- Run ---------------------
 
 // new MockDataInserter().insertUsers();
-new MockDataInserter().insertFollows(20);
+// new MockDataInserter().insertFollows(20);
+new MockDataInserter().insertPostsForOneUser("bob", 20);
