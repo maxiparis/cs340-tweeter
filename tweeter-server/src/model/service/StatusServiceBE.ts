@@ -33,7 +33,21 @@ export class StatusServiceBE extends AuthServiceBE {
     pageSize: number,
     lastItem: StatusDto | null,
   ): Promise<[StatusDto[], boolean]> {
-    return this.getFakeStoryFeedItems(lastItem, pageSize);
+    await this.validateToken(authToken);
+    let lastItemIsodateReceiver = undefined;
+    if (lastItem != null) {
+      lastItemIsodateReceiver = this.generateIsoDateReceiver(
+        lastItem.timestamp,
+        lastItem.user.alias,
+      );
+    }
+
+    let results = await this.feedDAO.getFeedItems(
+      userAlias,
+      pageSize,
+      lastItemIsodateReceiver,
+    );
+    return [results.values, results.hasMorePages];
   }
 
   public async fetchMoreStoryItems(
@@ -71,9 +85,10 @@ export class StatusServiceBE extends AuthServiceBE {
     // to their feed and insert it into the feed database.
     for (let followerAlias of followerAliases) {
       // Create an ISO date string to use for sorting and combine it with the poster's alias.
-      let isodate = new Date(newStatus.timestamp).toISOString();
-      let isodateReceiver = isodate + newStatus.user.alias;
-
+      let isodateReceiver = this.generateIsoDateReceiver(
+        newStatus.timestamp,
+        newStatus.user.alias,
+      );
       // Create a feed entity for the follower to link this new status.
       let entity = new FeedEntity(newStatus, followerAlias, isodateReceiver);
 
@@ -96,5 +111,10 @@ export class StatusServiceBE extends AuthServiceBE {
 
     const dtos: StatusDto[] = items.map((status) => status.dto);
     return [dtos, hasMore];
+  }
+
+  private generateIsoDateReceiver(timestamp: number, alias: string): string {
+    let isodate = new Date(timestamp).toISOString();
+    return isodate + alias;
   }
 }
