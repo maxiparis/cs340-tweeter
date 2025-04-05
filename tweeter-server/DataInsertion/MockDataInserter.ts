@@ -216,6 +216,20 @@ class MockDataInserter {
     );
   }
 
+  /**
+   * Inserts a specified number of random posts for all followees of each mock user.
+   *
+   * @param {number} numPostsPerUser - The number of random posts to create for each followee of the mock users.
+   * @return {Promise<void>} A promise that resolves when the random posts have been successfully inserted.
+   */
+  async insertRandomPostsForAllMockUsersFollowees(numPostsPerUser: number) {
+    let allMockUsersAliases = this.allUsers.map((user) => user.alias);
+
+    for (let user of allMockUsersAliases) {
+      await this.insertRandomPostsForThoseWhoFollow(user, numPostsPerUser);
+    }
+  }
+
   // ------------------------------------------
   // ---------------- Helpers -----------------
 
