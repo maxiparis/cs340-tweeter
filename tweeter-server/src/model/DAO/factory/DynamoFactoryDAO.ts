@@ -3,6 +3,7 @@ import { IUserDAO, UserDAO } from "../UserDAO";
 import { AuthTokenDAO, IAuthTokenDAO } from "../AuthTokenDAO";
 import { IProfilePicturesDAO, ProfilePicturesDAO } from "../ProfilePicturesDAO";
 import { FollowsDAO, IFollowsDAO } from "../FollowsDAO";
+import { IStoryDAO, StoryDAO } from "../StoryDAO";
 
 export class DynamoFactoryDAO implements IFactoryDAO {
   getFollowsDAO(): IFollowsDAO {
@@ -16,5 +17,8 @@ export class DynamoFactoryDAO implements IFactoryDAO {
   }
   getProfilePicturesDAO(): IProfilePicturesDAO {
     return new ProfilePicturesDAO();
+  }
+  getStoryDAO(): IStoryDAO {
+    return new StoryDAO();
   }
 }
