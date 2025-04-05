@@ -1,19 +1,18 @@
 import { FakeData, User, UserDto } from "tweeter-shared";
 import { IFollowsDAO } from "../DAO/FollowsDAO";
 import { IFactoryDAO } from "../DAO/factory/IFactoryDAO";
-import { IAuthTokenDAO } from "../DAO/AuthTokenDAO";
 import { IUserDAO } from "../DAO/UserDAO";
+import { AuthServiceBE } from "./AuthServiceBE";
 
 export type FollowOperation = "follow" | "unfollow";
 
-export class FollowServiceBE {
+export class FollowServiceBE extends AuthServiceBE {
   private followsDAO: IFollowsDAO;
-  private authtokenDAO: IAuthTokenDAO;
   private userDAO: IUserDAO;
 
   constructor(factoryDAO: IFactoryDAO) {
+    super(factoryDAO);
     this.followsDAO = factoryDAO.getFollowsDAO();
-    this.authtokenDAO = factoryDAO.getAuthTokenDAO();
     this.userDAO = factoryDAO.getUserDAO();
   }
 
@@ -68,14 +67,6 @@ export class FollowServiceBE {
   public async fetchFollowerCount(authToken: string, user: string) {
     await this.validateToken(authToken);
     return await this.followsDAO.getFollowersCount(user);
-  }
-
-  private async validateToken(authToken: string): Promise<string> {
-    let userValidated = await this.authtokenDAO.validToken(authToken);
-    if (userValidated == null) {
-      throw new Error("Invalid token");
-    }
-    return userValidated;
   }
 
   public async updateFollowStatus(

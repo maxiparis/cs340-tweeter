@@ -1,6 +1,12 @@
 import { FakeData, Status, StatusDto } from "tweeter-shared";
+import { AuthServiceBE } from "./AuthServiceBE";
+import { IFactoryDAO } from "../DAO/factory/IFactoryDAO";
 
-export class StatusServiceBE {
+export class StatusServiceBE extends AuthServiceBE {
+  constructor(factoryDAO: IFactoryDAO) {
+    super(factoryDAO);
+  }
+
   public async fetchMoreFeedItems(
     authToken: string,
     userAlias: string,
@@ -23,7 +29,8 @@ export class StatusServiceBE {
     authToken: string,
     newStatus: StatusDto,
   ): Promise<void> {
-    // Eventually we insert the status in the DB.
+    await this.validateToken(authToken);
+    // Eventually we insert the status in the DB
   }
 
   // ------------------------------------------

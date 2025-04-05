@@ -7,18 +7,17 @@ import {
 } from "tweeter-shared";
 import { IUserDAO } from "../DAO/UserDAO";
 import bcrypt from "bcryptjs";
-import { IAuthTokenDAO } from "../DAO/AuthTokenDAO";
 import { IProfilePicturesDAO } from "../DAO/ProfilePicturesDAO";
 import { IFactoryDAO } from "../DAO/factory/IFactoryDAO";
+import { AuthServiceBE } from "./AuthServiceBE";
 
-export class UserServiceBE {
+export class UserServiceBE extends AuthServiceBE {
   private userDAO: IUserDAO;
-  private authTokenDAO: IAuthTokenDAO;
   private profilePicturesDAO: IProfilePicturesDAO;
 
   constructor(factoryDAO: IFactoryDAO) {
+    super(factoryDAO);
     this.userDAO = factoryDAO.getUserDAO();
-    this.authTokenDAO = factoryDAO.getAuthTokenDAO();
     this.profilePicturesDAO = factoryDAO.getProfilePicturesDAO();
   }
 
@@ -78,14 +77,13 @@ export class UserServiceBE {
     token: string,
     alias: string,
   ): Promise<UserDto | null> => {
-    // return FakeData.instance.findUserByAlias(alias)?.dto ?? null;
     let foundUserEntity = await this.userDAO.getUserByAlias(alias);
     return foundUserEntity?.dto() ?? null;
   };
 
   public processLogout = async (token: string): Promise<void> => {
     //Identify user with that token and revoke it
-    await this.authTokenDAO.revoke(token);
+    await this.authtokenDAO.revoke(token);
 
     return;
   };
@@ -112,7 +110,7 @@ export class UserServiceBE {
   private async createAuthTokenForUser(alias: string): Promise<AuthTokenDto> {
     //Insert into AuthTokens, gets token, returns it
     let token = AuthToken.Generate();
-    await this.authTokenDAO.insert(token, alias);
+    await this.authtokenDAO.insert(token, alias);
     return token.dto;
   }
 }
