@@ -1,10 +1,11 @@
-import { User } from "tweeter-shared";
+import { StatusDto, User } from "tweeter-shared";
 import { FollowsDAO } from "../src/model/DAO/FollowsDAO";
 import { UserDAO } from "../src/model/DAO/UserDAO";
 import { AuthTokenDAO } from "../src/model/DAO/AuthTokenDAO";
 import bcrypt from "bcryptjs";
 import { StoryDAO } from "../src/model/DAO/StoryDAO";
-import { StatusEntity } from "../src/model/entity/StatusEntity";
+import { StatusServiceBE } from "../src/model/service/StatusServiceBE";
+import { DynamoFactoryDAO } from "../src/model/DAO/factory/DynamoFactoryDAO";
 
 const MALE_IMAGE_URL: string =
   "https://faculty.cs.byu.edu/~jwilkerson/cs340/tweeter/images/donald_duck.png";
@@ -16,6 +17,7 @@ class MockDataInserter {
   userDao = new UserDAO();
   authTokenDAO = new AuthTokenDAO();
   storyDAO = new StoryDAO();
+  statusServiceBE = new StatusServiceBE(new DynamoFactoryDAO());
 
   constructor() {}
 
@@ -102,9 +104,9 @@ class MockDataInserter {
 
   async insertFollows(followersPerUser: number) {
     for (let user of this.allUsers) {
-      const randomNumbers: number[] = Array.from(
-        { length: followersPerUser },
-        () => Math.floor(Math.random() * 30),
+      const randomNumbers = this.generateArrayOfRandomNumbers(
+        followersPerUser,
+        30,
       );
       for (let number of randomNumbers) {
         if (user.alias !== this.allUsers[number].alias) {
@@ -127,22 +129,91 @@ class MockDataInserter {
     }
   }
 
-  async insertPostsForOneUser(userAlias: string, numPosts: number) {
+  async insertRandomPostsForOneUser(userAlias: string, numPosts: number) {
     let userFound = this.getUserByAlias(userAlias);
     if (userFound === undefined) {
       console.log("stopping insertion of posts, user was undefined");
       return;
     }
 
-    for (let i = 0; i < numPosts; i++) {
-      console.log(`inserting post for ${userAlias}`, i);
-      let entity = new StatusEntity({
-        post: this.twitterPosts[i],
-        user: userFound.dto,
-        timestamp: Date.now(),
-      });
-      await this.storyDAO.insert(entity);
+    const randomNumbers = this.generateArrayOfRandomNumbers(
+      numPosts,
+      this.twitterPosts.length,
+    );
+    let i = 0;
+    for (let number of randomNumbers) {
+      await this.insertUserPost(userAlias, i, number, userFound);
     }
+  }
+
+  private async insertUserPost(
+    userAlias: string,
+    i: number,
+    indexInTwitterPosts: number,
+    userFound: User,
+  ) {
+    console.log(`inserting post for ${userAlias}`, i);
+    let statusDto = {
+      post: this.twitterPosts[indexInTwitterPosts],
+      user: userFound.dto,
+      timestamp: Date.now(),
+    } as StatusDto;
+
+    await this.statusServiceBE.postStatus(
+      "acbafa2a-ecc9-434f-a694-ad5482103091",
+      statusDto,
+    );
+    i++;
+  }
+
+  async insertPostsForMultipleUsersInRandomOrder(
+    usersAliases: string[],
+    numPosts: number,
+  ) {
+    let randomPostIndexes = this.generateArrayOfRandomNumbers(
+      numPosts,
+      this.twitterPosts.length,
+    );
+    let randomUsersIndexes = this.generateArrayOfRandomNumbers(
+      numPosts,
+      usersAliases.length,
+    );
+    for (let i = 0; i < numPosts; i++) {
+      let userFound = this.getUserByAlias(usersAliases[randomUsersIndexes[i]]);
+      if (userFound === undefined) {
+        console.log("stopping insertion of posts, user was undefined");
+        return;
+      }
+
+      await this.insertUserPost(
+        userFound.alias,
+        i,
+        randomPostIndexes[i],
+        userFound,
+      );
+    }
+  }
+
+  /**
+   * Inserts a random number of posts for users who follow the specified followee.
+   * Purpose: create posts for the `followeeAlias` feed page.
+   * @param {string} followeeAlias - The alias of the user being followed.
+   * @param {number} numPosts - The number of random posts to insert for each follower.
+   * @return {Promise<void>} A promise that resolves when the posts have been inserted.
+   */
+  async insertRandomPostsForThoseWhoFollow(
+    followeeAlias: string,
+    numPosts: number,
+  ) {
+    let followeesAliases =
+      await this.followsDao.getFolloweeAliases(followeeAlias);
+
+    console.log(`Those that ${followeeAlias} follows to:`);
+    console.table(followeesAliases);
+    await this.insertPostsForMultipleUsersInRandomOrder(
+      followeesAliases,
+      numPosts,
+    );
   }
 
   // ------------------------------------------
@@ -165,6 +236,16 @@ class MockDataInserter {
     let hash = this.generateSixDigitHash();
     return `https://dummyjson.com/icon/${hash}/300`;
   }
+
+  private generateArrayOfRandomNumbers(
+    count: number,
+    topLimit: number,
+  ): number[] {
+    const randomNumbers: number[] = Array.from({ length: count }, () =>
+      Math.floor(Math.random() * topLimit),
+    );
+    return randomNumbers;
+  }
 }
 
 // ------------------------------------------
@@ -172,4 +253,13 @@ class MockDataInserter {
 
 // new MockDataInserter().insertUsers();
 // new MockDataInserter().insertFollows(20);
-new MockDataInserter().insertPostsForOneUser("bob", 20);
+// try {
+//   new MockDataInserter()
+//     .insertRandomPostsForThoseWhoFollow("frank", 30)
+//     .then(() => {
+//       console.log("done");
+//       process.exit(0);
+//     });
+// } catch (e) {
+//   console.log(e);
+// }
