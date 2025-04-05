@@ -30,6 +30,7 @@ export interface IFollowsDAO {
     pageSize: number,
     lastFolloweeHandle: string | undefined,
   ): Promise<DataPage<UserDto>>;
+  getFollowersAliases(alias: string): Promise<string[]>;
 }
 
 // ------------------------------------------
@@ -196,5 +197,27 @@ export class FollowsDAO implements IFollowsDAO {
       items.push(user);
     });
     return new DataPage<UserDto>(items, hasMorePages);
+  }
+
+  async getFollowersAliases(alias: string): Promise<string[]> {
+    const params = {
+      TableName: this.tableName,
+      IndexName: this.indexName,
+      KeyConditionExpression: "followee_handle = :followee_handle",
+      ExpressionAttributeValues: {
+        ":followee_handle": alias,
+      },
+    };
+
+    const data = await this.client.send(new QueryCommand(params));
+    let followers: string[] = [];
+
+    data.Items?.forEach((item) => {
+      if (item[this.followerHandleAttr] !== undefined) {
+        followers.push(item[this.followerHandleAttr] as string);
+      }
+    });
+
+    return followers;
   }
 }

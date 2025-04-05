@@ -1,17 +1,17 @@
-// -------------------------------------------
-// ---------------- Interface ----------------
 import {
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { StatusEntity } from "../entity/StatusEntity";
+import { StoryEntity } from "../entity/StoryEntity";
 import { DataPage } from "../entity/DataPage";
 import { StatusDto, UserDto } from "tweeter-shared";
 
+// -------------------------------------------
+// ---------------- Interface ----------------
 export interface IStoryDAO {
-  insert(status: StatusEntity): Promise<void>;
+  insert(status: StoryEntity): Promise<void>;
   getStoryItems(
     alias: string,
     pageSize: number,
@@ -33,7 +33,7 @@ export class StoryDAO implements IStoryDAO {
 
   constructor() {}
 
-  async insert(status: StatusEntity) {
+  async insert(status: StoryEntity) {
     const params = {
       TableName: this.tableName,
       Item: {

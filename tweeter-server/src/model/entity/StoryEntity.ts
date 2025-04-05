@@ -1,6 +1,6 @@
 import { StatusDto } from "tweeter-shared";
 
-export class StatusEntity {
+export class StoryEntity {
   sender_alias: string;
   timestamp: number;
   status_dto: StatusDto;
