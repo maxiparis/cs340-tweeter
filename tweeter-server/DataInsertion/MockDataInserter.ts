@@ -2,6 +2,7 @@ import { StatusDto, User } from "tweeter-shared";
 import { FollowsDAO } from "../src/model/DAO/FollowsDAO";
 import { UserDAO } from "../src/model/DAO/UserDAO";
 import { AuthTokenDAO } from "../src/model/DAO/AuthTokenDAO";
+// @ts-ignore
 import bcrypt from "bcryptjs";
 import { StoryDAO } from "../src/model/DAO/StoryDAO";
 import { StatusServiceBE } from "../src/model/service/StatusServiceBE";
@@ -92,6 +93,12 @@ class MockDataInserter {
   // -----------------------------------------------
   // ---------------- Data Inserters ----------------
 
+  /**
+   * Inserts a list of users into the database. Each user will have their password hashed before being inserted.
+   * The password for all users will be set to a default value and hashed using the hashPassword method.
+   *
+   * @return {Promise<void>} Resolves when all users have been successfully inserted into the database.
+   */
   async insertUsers() {
     let password = "a"; //all users will have password "a"
     let hashedPassword = await this.hashPassword(password);
@@ -102,6 +109,12 @@ class MockDataInserter {
     }
   }
 
+  /**
+   * Inserts follow relationships between users based on the specified number of followers per user.
+   *
+   * @param {number} followersPerUser - The number of followers to assign to each user.
+   * @return {Promise<void>} A promise that resolves when the follow relationships are successfully inserted.
+   */
   async insertFollows(followersPerUser: number) {
     for (let user of this.allUsers) {
       const randomNumbers = this.generateArrayOfRandomNumbers(
@@ -129,6 +142,13 @@ class MockDataInserter {
     }
   }
 
+  /**
+   * Inserts a specified number of random posts for a specified user.
+   *
+   * @param {string} userAlias - The alias of the user for whom the posts are to be inserted.
+   * @param {number} numPosts - The number of random posts to be inserted for the user.
+   * @return {Promise<void>} A promise that resolves when the posts have been successfully inserted or logs an error if the user is not found.
+   */
   async insertRandomPostsForOneUser(userAlias: string, numPosts: number) {
     let userFound = this.getUserByAlias(userAlias);
     if (userFound === undefined) {
@@ -146,6 +166,15 @@ class MockDataInserter {
     }
   }
 
+  /**
+   * Inserts a user post with details provided.
+   *
+   * @param {string} userAlias - The alias of the user for whom the post is being inserted.
+   * @param {number} i - The current index or counter for operation tracking.
+   * @param {number} indexInTwitterPosts - The index representing the specific post in the Twitter posts array.
+   * @param {User} userFound - The user object containing details of the user.
+   * @return {Promise<void>} Resolves the operation to insert a user post asynchronously.
+   */
   private async insertUserPost(
     userAlias: string,
     i: number,
@@ -166,6 +195,17 @@ class MockDataInserter {
     i++;
   }
 
+  /**
+   * Inserts posts for multiple users in a random order.
+   * The method generates random indices to select posts and users,
+   * and then inserts the posts for those users. If a user corresponding
+   * to an alias is not found, the operation stops.
+   *
+   * @param {string[]} usersAliases - An array of user aliases for whom posts will be created.
+   * @param {number} numPosts - The number of posts to insert in the random order.
+   * @return {Promise<void>} Resolves when all posts have been successfully inserted
+   * or stops early if a user is undefined.
+   */
   async insertPostsForMultipleUsersInRandomOrder(
     usersAliases: string[],
     numPosts: number,
@@ -267,13 +307,13 @@ class MockDataInserter {
 
 // new MockDataInserter().insertUsers();
 // new MockDataInserter().insertFollows(20);
-// try {
-//   new MockDataInserter()
-//     .insertRandomPostsForThoseWhoFollow("frank", 30)
-//     .then(() => {
-//       console.log("done");
-//       process.exit(0);
-//     });
-// } catch (e) {
-//   console.log(e);
-// }
+try {
+  new MockDataInserter()
+    .insertRandomPostsForAllMockUsersFollowees(5)
+    .then(() => {
+      console.log("done");
+      process.exit(0);
+    });
+} catch (e) {
+  console.log(e);
+}

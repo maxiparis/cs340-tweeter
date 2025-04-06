@@ -6,17 +6,22 @@ export const handler = async (
   request: PagedItemRequest<UserDto>,
 ): Promise<PagedItemResponse<UserDto>> => {
   const followService = new FollowServiceBE(new DynamoFactoryDAO());
-  const [items, hasMore] = await followService.fetchMoreFollowers(
-    request.token,
-    request.userAlias,
-    request.pageSize,
-    request.lastItem,
-  );
+  try {
+    const [items, hasMore] = await followService.fetchMoreFollowers(
+      request.token,
+      request.userAlias,
+      request.pageSize,
+      request.lastItem,
+    );
 
-  return {
-    success: true,
-    message: null,
-    items: items,
-    hasMore: hasMore,
-  };
+    return {
+      success: true,
+      message: null,
+      items: items,
+      hasMore: hasMore,
+    };
+  } catch (error) {
+    // @ts-ignore
+    throw new Error("[BadRequest] " + error.message);
+  }
 };

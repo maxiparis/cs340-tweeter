@@ -5,18 +5,23 @@ import { DynamoFactoryDAO } from "../../model/DAO/factory/DynamoFactoryDAO";
 export const handler = async (
   request: PagedItemRequest<StatusDto>,
 ): Promise<PagedItemResponse<StatusDto>> => {
-  const service = new StatusServiceBE(new DynamoFactoryDAO());
-  const [items, hasMore] = await service.fetchMoreStoryItems(
-    request.token,
-    request.userAlias,
-    request.pageSize,
-    request.lastItem,
-  );
+  try {
+    const service = new StatusServiceBE(new DynamoFactoryDAO());
+    const [items, hasMore] = await service.fetchMoreStoryItems(
+      request.token,
+      request.userAlias,
+      request.pageSize,
+      request.lastItem,
+    );
 
-  return {
-    success: true,
-    message: null,
-    items: items,
-    hasMore: hasMore,
-  };
+    return {
+      success: true,
+      message: null,
+      items: items,
+      hasMore: hasMore,
+    };
+  } catch (error) {
+    // @ts-ignore
+    throw new Error("[BadRequest] " + error.message);
+  }
 };
