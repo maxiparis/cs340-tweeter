@@ -5,15 +5,20 @@ import { DynamoFactoryDAO } from "../../model/DAO/factory/DynamoFactoryDAO";
 export const handler = async (
   request: UserAliasRequest,
 ): Promise<GetFollowCountResponse> => {
-  const followService = new FollowServiceBE(new DynamoFactoryDAO());
-  const followeeCount = await followService.fetchFolloweeCount(
-    request.token,
-    request.userAlias,
-  );
+  try {
+    const followService = new FollowServiceBE(new DynamoFactoryDAO());
+    const followeeCount = await followService.fetchFolloweeCount(
+      request.token,
+      request.userAlias,
+    );
 
-  return {
-    success: true,
-    message: null,
-    count: followeeCount,
-  };
+    return {
+      success: true,
+      message: null,
+      count: followeeCount,
+    };
+  } catch (e) {
+    // @ts-ignore
+    throw new Error("[BadRequest] " + e.message);
+  }
 };
